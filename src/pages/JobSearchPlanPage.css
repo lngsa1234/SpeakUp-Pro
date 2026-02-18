@@ -1,0 +1,497 @@
+/* Job Search Plan Page Styles */
+
+.job-search-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.job-search-page .plan-header {
+  margin-bottom: 2rem;
+}
+
+.job-search-page .plan-header .back-button {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.job-search-page .plan-header .back-button:hover {
+  text-decoration: underline;
+}
+
+.job-search-page .plan-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.job-search-page .plan-header .subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.job-search-page .applications-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.job-search-page .applications-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Metrics Dashboard */
+.metrics-dashboard {
+  margin-bottom: 2rem;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+}
+
+.metric-card {
+  background-color: var(--surface);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-left: 4px solid var(--primary-color);
+}
+
+.metric-icon {
+  font-size: 2rem;
+}
+
+.metric-content {
+  flex: 1;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Pipeline Funnel */
+.pipeline-section {
+  background-color: var(--surface);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.pipeline-section h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.pipeline-funnel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pipeline-stage {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pipeline-bar {
+  height: 32px;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 1rem;
+  min-width: 60px;
+  transition: width 0.5s ease;
+}
+
+.pipeline-count {
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.pipeline-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
+/* Progress Section */
+.job-search-page .progress-section {
+  background-color: var(--surface);
+  padding: 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.job-search-page .progress-card {
+  margin-bottom: 1.5rem;
+}
+
+.job-search-page .progress-stats {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.job-search-page .progress-stats .stat {
+  text-align: center;
+}
+
+.job-search-page .progress-stats .stat-number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #10b981;
+}
+
+.job-search-page .progress-stats .stat-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.job-search-page .progress-bar-container {
+  background-color: var(--background);
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.job-search-page .progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.job-search-page .continue-btn {
+  font-size: 1.25rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.job-search-page .continue-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+/* Week Selector */
+.job-search-page .week-selector {
+  margin-bottom: 2rem;
+}
+
+.job-search-page .week-selector h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.job-search-page .week-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.job-search-page .week-tab {
+  background-color: var(--surface);
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 80px;
+}
+
+.job-search-page .week-tab:hover {
+  border-color: #10b981;
+}
+
+.job-search-page .week-tab.active {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+
+.job-search-page .week-tab.current {
+  border-color: var(--warning);
+}
+
+.job-search-page .week-tab .week-number {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.job-search-page .week-tab .week-progress {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.job-search-page .week-tab.active .week-progress {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Week Content */
+.job-search-page .week-content {
+  margin-bottom: 3rem;
+}
+
+.job-search-page .week-header {
+  background-color: var(--surface);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #10b981;
+}
+
+.job-search-page .week-header h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.job-search-page .week-header p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.job-search-page .week-goals {
+  font-size: 0.9rem;
+}
+
+.job-search-page .week-goals strong {
+  color: var(--text-primary);
+}
+
+.job-search-page .week-goals ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.job-search-page .week-goals li {
+  margin-bottom: 0.25rem;
+}
+
+/* Days Grid */
+.job-search-page .days-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.job-search-page .day-card {
+  background-color: var(--surface);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.job-search-page .day-card:hover:not(.locked) {
+  border-color: #10b981;
+  transform: translateY(-4px);
+}
+
+.job-search-page .day-card.completed {
+  border-color: var(--success);
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.job-search-page .day-card.current {
+  border-color: var(--warning);
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.job-search-page .day-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.job-search-page .day-card.review {
+  border-left: 4px solid #10b981;
+}
+
+.job-search-page .day-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.job-search-page .day-card-header .day-number {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.job-search-page .day-card-header .check-mark {
+  color: var(--success);
+  font-size: 1.25rem;
+}
+
+.job-search-page .day-card-header .current-badge,
+.job-search-page .day-card-header .review-badge,
+.job-search-page .day-card-header .michigan-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.job-search-page .day-card-header .current-badge {
+  background-color: var(--warning);
+  color: white;
+}
+
+.job-search-page .day-card-header .review-badge {
+  background-color: #10b981;
+  color: white;
+}
+
+.job-search-page .day-card-header .michigan-badge {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.job-search-page .day-card .day-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.job-search-page .day-card .day-focus {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.job-search-page .day-card .day-activities {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Plan Overview */
+.job-search-page .plan-overview {
+  margin-top: 3rem;
+}
+
+.job-search-page .plan-overview h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.job-search-page .overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.job-search-page .overview-card {
+  background-color: var(--surface);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+}
+
+.job-search-page .overview-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #10b981;
+}
+
+.job-search-page .overview-card ul {
+  list-style: none;
+}
+
+.job-search-page .overview-card li {
+  padding: 0.5rem 0;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.job-search-page .overview-card li:last-child {
+  border-bottom: none;
+}
+
+.job-search-page .overview-card.michigan-highlight {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.job-search-page .overview-card.michigan-highlight h3 {
+  color: #3b82f6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .job-search-page .plan-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .job-search-page .progress-stats {
+    gap: 1.5rem;
+  }
+
+  .job-search-page .progress-stats .stat-number {
+    font-size: 2rem;
+  }
+
+  .job-search-page .week-tabs {
+    justify-content: center;
+  }
+
+  .job-search-page .days-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .job-search-page .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pipeline-stage {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .pipeline-bar {
+    width: 100% !important;
+  }
+}

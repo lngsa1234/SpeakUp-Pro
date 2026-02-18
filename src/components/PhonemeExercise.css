@@ -1,0 +1,586 @@
+/* Phoneme Exercise Component Styles */
+.phoneme-exercise {
+  background-color: var(--surface);
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.phoneme-exercise .practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: var(--surface-light);
+  cursor: pointer;
+}
+
+.phoneme-exercise .practice-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.phoneme-exercise .practice-content {
+  padding: 1.5rem;
+}
+
+/* Not supported message */
+.phoneme-exercise .not-supported {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-secondary);
+}
+
+.phoneme-exercise .not-supported p {
+  margin-bottom: 0.5rem;
+}
+
+/* Exercise intro */
+.exercise-intro {
+  text-align: center;
+}
+
+.exercise-description {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.exercise-tip {
+  background-color: var(--background);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.exercise-tip strong {
+  color: var(--primary-color);
+}
+
+.exercise-stats {
+  margin-bottom: 1.5rem;
+}
+
+.exercise-stats .stat-item {
+  background-color: var(--background);
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.start-exercise-btn {
+  width: 100%;
+  max-width: 300px;
+}
+
+/* Exercise active state */
+.exercise-active {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Progress indicator */
+.phoneme-exercise .progress-indicator {
+  text-align: center;
+}
+
+.phoneme-exercise .progress-indicator span {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.phoneme-exercise .progress-bar-mini {
+  height: 6px;
+  background-color: var(--background);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.phoneme-exercise .progress-fill-mini {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color) 0%, #8b5cf6 100%);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Word pair display - side by side */
+.word-pair-display {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.pair-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 0 0.5rem;
+}
+
+/* Word card */
+.word-card {
+  flex: 1;
+  background-color: var(--background);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.word-card.recorded {
+  border-color: var(--success);
+}
+
+.word-main {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.word-phonetic {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+}
+
+.word-sentence {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Word listen controls */
+.word-listen-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.phoneme-exercise .listen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--surface-light);
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.phoneme-exercise .listen-btn:hover:not(:disabled) {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.phoneme-exercise .listen-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.phoneme-exercise .listen-btn .btn-icon {
+  font-size: 0.8rem;
+}
+
+.phoneme-exercise .listen-btn.slow {
+  background-color: transparent;
+}
+
+.phoneme-exercise .listen-btn.small {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+/* Word record section */
+.word-record-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.phoneme-exercise .record-btn {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  position: relative;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.phoneme-exercise .record-btn:hover:not(:disabled) {
+  transform: scale(1.02);
+}
+
+.phoneme-exercise .record-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.phoneme-exercise .record-btn.recording {
+  background-color: var(--error);
+}
+
+.phoneme-exercise .record-btn .record-icon {
+  font-size: 1rem;
+}
+
+.phoneme-exercise .record-btn .pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5rem;
+  background-color: var(--error);
+  animation: pulseRing 1.5s ease-out infinite;
+  z-index: -1;
+}
+
+.phoneme-exercise .record-btn.small {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+@keyframes pulseRing {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+}
+
+/* Word transcription display */
+.word-transcription {
+  background-color: var(--surface);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.word-transcription.interim {
+  background-color: rgba(99, 102, 241, 0.1);
+  border: 1px dashed var(--primary-color);
+  animation: pulse-border 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    border-color: var(--primary-color);
+    opacity: 1;
+  }
+  50% {
+    border-color: transparent;
+    opacity: 0.7;
+  }
+}
+
+.transcription-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.transcription-text {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+.try-again-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.try-again-btn:hover {
+  color: var(--primary-hover);
+}
+
+/* Speech error display */
+.phoneme-exercise .speech-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--error);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.phoneme-exercise .speech-error p {
+  color: var(--error);
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Pair complete actions */
+.pair-complete-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.pair-complete-actions button {
+  min-width: 200px;
+}
+
+/* Recorded pairs progress */
+.recorded-pairs {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.recorded-pairs h4 {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.recorded-pairs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.recorded-pair {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  color: white;
+}
+
+.recorded-pair.correct {
+  background-color: var(--success);
+}
+
+.recorded-pair.incorrect {
+  background-color: var(--error);
+}
+
+/* Exercise complete */
+.exercise-complete {
+  text-align: center;
+  padding: 1rem;
+}
+
+.exercise-complete .complete-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--success);
+  color: white;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.exercise-complete h4 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.final-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-box .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-box .stat-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Results summary */
+.phoneme-exercise .results-summary {
+  background-color: var(--background);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.result-pair {
+  background-color: var(--surface);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-left: 4px solid var(--border);
+}
+
+.result-pair:last-child {
+  margin-bottom: 0;
+}
+
+.result-pair.correct {
+  border-left-color: var(--success);
+}
+
+.result-pair.incorrect {
+  border-left-color: var(--error);
+}
+
+.result-pair-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.pair-words {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.pair-status {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.pair-status.success {
+  color: var(--success);
+}
+
+.pair-status.error {
+  color: var(--error);
+}
+
+.result-pair-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.word-result {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.word-label {
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.word-score {
+  font-weight: 600;
+  min-width: 50px;
+}
+
+.word-said {
+  color: var(--text-secondary);
+  font-style: italic;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .word-pair-display {
+    flex-direction: column;
+  }
+
+  .pair-divider {
+    padding: 0.5rem 0;
+  }
+
+  .word-card {
+    padding: 1rem;
+  }
+
+  .word-main {
+    font-size: 1.25rem;
+  }
+
+  .word-listen-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .phoneme-exercise .listen-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .phoneme-exercise .record-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .final-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .result-pair-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .word-result {
+    flex-wrap: wrap;
+  }
+
+  .word-said {
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+}

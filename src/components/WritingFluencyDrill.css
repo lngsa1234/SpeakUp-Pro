@@ -1,0 +1,626 @@
+/* Writing Fluency Drill Component Styles */
+.writing-fluency-drill {
+  background-color: var(--surface);
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.writing-fluency-drill .practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: var(--surface-light);
+  cursor: pointer;
+}
+
+.writing-fluency-drill .practice-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.writing-fluency-drill .practice-content {
+  padding: 1.5rem;
+}
+
+/* Drill intro */
+.writing-fluency-drill .drill-intro {
+  text-align: center;
+}
+
+.writing-fluency-drill .drill-description {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.writing-fluency-drill .prompt-display {
+  background-color: var(--background);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.writing-fluency-drill .prompt-display h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.writing-fluency-drill .prompt-text {
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* Duration selector */
+.writing-fluency-drill .duration-selector {
+  margin-bottom: 1.5rem;
+}
+
+.writing-fluency-drill .duration-selector h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.writing-fluency-drill .duration-options {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.writing-fluency-drill .duration-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background-color: var(--background);
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.writing-fluency-drill .duration-option:hover {
+  border-color: var(--primary-color);
+}
+
+.writing-fluency-drill .duration-option.selected {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.writing-fluency-drill .duration-label {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.writing-fluency-drill .duration-desc {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* WPM Benchmarks */
+.writing-fluency-drill .wpm-benchmarks {
+  background-color: var(--background);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.writing-fluency-drill .wpm-benchmarks h4 {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.writing-fluency-drill .benchmark-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.writing-fluency-drill .benchmark-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: var(--surface);
+  border-radius: 0.5rem;
+  min-width: 100px;
+}
+
+.writing-fluency-drill .benchmark-level {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.writing-fluency-drill .benchmark-range {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.writing-fluency-drill .start-btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+/* Drill active state */
+.writing-fluency-drill .drill-active {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Timer display */
+.writing-fluency-drill .timer-display {
+  display: flex;
+  justify-content: center;
+}
+
+.writing-fluency-drill .timer-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s;
+}
+
+.writing-fluency-drill .timer-circle.paused {
+  background: linear-gradient(135deg, var(--warning), #f59e0b);
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+}
+
+.writing-fluency-drill .timer-time {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.writing-fluency-drill .timer-label {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  margin-top: 0.25rem;
+}
+
+/* Live stats */
+.writing-fluency-drill .live-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.writing-fluency-drill .stat-box {
+  background-color: var(--background);
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  min-width: 80px;
+}
+
+.writing-fluency-drill .stat-box.highlight {
+  background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+  color: white;
+}
+
+.writing-fluency-drill .stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.writing-fluency-drill .stat-label {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 0.25rem;
+}
+
+/* Prompt reminder */
+.writing-fluency-drill .prompt-reminder {
+  background-color: var(--background);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.writing-fluency-drill .prompt-label {
+  color: var(--text-secondary);
+  margin-right: 0.5rem;
+}
+
+.writing-fluency-drill .prompt-text-mini {
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* Writing area */
+.writing-fluency-drill .writing-area {
+  position: relative;
+}
+
+.writing-fluency-drill .writing-area textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.writing-fluency-drill .writing-area textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.writing-fluency-drill .writing-area textarea.paused {
+  opacity: 0.5;
+}
+
+/* Control buttons */
+.writing-fluency-drill .control-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.writing-fluency-drill .control-buttons button {
+  min-width: 140px;
+}
+
+.writing-fluency-drill .finish-btn {
+  color: var(--text-secondary);
+}
+
+/* Evaluating state */
+.writing-fluency-drill .evaluating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.writing-fluency-drill .spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error message */
+.writing-fluency-drill .error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Evaluation results */
+.writing-fluency-drill .evaluation-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.writing-fluency-drill .overall-score {
+  text-align: center;
+  padding: 1rem;
+}
+
+.writing-fluency-drill .score-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+  background-color: var(--background);
+}
+
+.writing-fluency-drill .score-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.writing-fluency-drill .score-max {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.writing-fluency-drill .score-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Session stats */
+.writing-fluency-drill .session-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--background);
+  border-radius: 0.5rem;
+}
+
+.writing-fluency-drill .session-stat {
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+
+.writing-fluency-drill .session-stats .stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.writing-fluency-drill .session-stats .stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Your writing box */
+.writing-fluency-drill .your-writing-box {
+  background-color: var(--background);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.writing-fluency-drill .your-writing-box h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.writing-fluency-drill .your-writing-text {
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-style: italic;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* Score breakdown */
+.writing-fluency-drill .score-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.writing-fluency-drill .score-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.writing-fluency-drill .score-category {
+  min-width: 140px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.writing-fluency-drill .score-bar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--background);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.writing-fluency-drill .score-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.writing-fluency-drill .score-value {
+  min-width: 50px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Feedback sections */
+.writing-fluency-drill .feedback-section {
+  background-color: var(--background);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.writing-fluency-drill .feedback-section h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.writing-fluency-drill .feedback-section p {
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.writing-fluency-drill .feedback-section ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.writing-fluency-drill .feedback-section li {
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.writing-fluency-drill .feedback-stats {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.writing-fluency-drill .feedback-section.encouragement {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* Transitions */
+.writing-fluency-drill .transitions-used,
+.writing-fluency-drill .transitions-suggested {
+  margin-top: 0.75rem;
+}
+
+.writing-fluency-drill .transitions-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.writing-fluency-drill .transition-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.writing-fluency-drill .transition-tag {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+}
+
+.writing-fluency-drill .transition-tag.used {
+  background-color: var(--success);
+  color: white;
+}
+
+.writing-fluency-drill .transition-tag.suggested {
+  background-color: var(--surface);
+  color: var(--text-secondary);
+  border: 1px dashed var(--border);
+}
+
+/* Target section */
+.writing-fluency-drill .target-section {
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--background);
+  border-radius: 0.5rem;
+}
+
+.writing-fluency-drill .target-wpm {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.writing-fluency-drill .target-wpm strong {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+/* Try again button */
+.writing-fluency-drill .try-again-btn {
+  width: 100%;
+}
+
+/* Expand button */
+.writing-fluency-drill .expand-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .writing-fluency-drill .duration-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .writing-fluency-drill .duration-option {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  .writing-fluency-drill .live-stats {
+    flex-wrap: wrap;
+  }
+
+  .writing-fluency-drill .stat-box {
+    flex: 1;
+    min-width: 60px;
+  }
+
+  .writing-fluency-drill .session-stats {
+    flex-wrap: wrap;
+  }
+
+  .writing-fluency-drill .session-stat {
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .writing-fluency-drill .control-buttons {
+    flex-direction: column;
+  }
+
+  .writing-fluency-drill .control-buttons button {
+    width: 100%;
+  }
+
+  .writing-fluency-drill .score-item {
+    flex-wrap: wrap;
+  }
+
+  .writing-fluency-drill .score-category {
+    min-width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .writing-fluency-drill .benchmark-list {
+    flex-direction: column;
+  }
+
+  .writing-fluency-drill .benchmark-item {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
