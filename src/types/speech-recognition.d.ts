@@ -9,6 +9,7 @@ interface SpeechRecognition extends EventTarget {
   onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
   start(): void;
   stop(): void;
+  abort(): void;
 }
 
 interface SpeechRecognitionEvent extends Event {

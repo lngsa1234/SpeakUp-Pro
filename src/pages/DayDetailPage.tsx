@@ -27,8 +27,8 @@ export const DayDetailPage: React.FC = () => {
   const [notes, setNotes] = useState('');
   const [completedActivities, setCompletedActivities] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
-  const [writingCompleted, setWritingCompleted] = useState(false);
-  const [speakingCompleted, setSpeakingCompleted] = useState(false);
+  const [, setWritingCompleted] = useState(false);
+  const [, setSpeakingCompleted] = useState(false);
   const [writingScore, setWritingScore] = useState<number | null>(null);
   const [speakingScore, setSpeakingScore] = useState<number | null>(null);
   const [writingInitialScore, setWritingInitialScore] = useState<number | null>(null);

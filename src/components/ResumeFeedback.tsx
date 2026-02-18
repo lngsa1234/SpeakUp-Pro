@@ -126,13 +126,6 @@ export const ResumeFeedback: React.FC<ResumeFeedbackProps> = ({
     return '#ef4444';
   };
 
-  const getScoreLabel = (score: number): string => {
-    if (score >= 9) return 'Excellent';
-    if (score >= 7) return 'Good';
-    if (score >= 5) return 'Fair';
-    return 'Needs Work';
-  };
-
   return (
     <div className="resume-feedback">
       <div className="resume-header" onClick={() => setIsExpanded(!isExpanded)}>

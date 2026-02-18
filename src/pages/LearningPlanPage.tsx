@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../services/supabase';
-import { weekInfo, getDaysForWeek, getDay, calculateProgress } from '../data/learningPlan';
+import { weekInfo, getDaysForWeek, getDay } from '../data/learningPlan';
 
 export const LearningPlanPage: React.FC = () => {
   const { user } = useAuth();
@@ -59,7 +59,6 @@ export const LearningPlanPage: React.FC = () => {
     return 60;
   };
 
-  const progress = calculateProgress(completedDays);
   const currentDay = getCurrentDay();
   const daysThisWeek = getDaysForWeek(selectedWeek);
 
