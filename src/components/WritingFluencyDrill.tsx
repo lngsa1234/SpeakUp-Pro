@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { api } from '../services/api';
+import { FeedbackReaction } from './FeedbackReaction';
 import type { WritingFluencyEvaluation } from '../types';
 import './WritingFluencyDrill.css';
 
@@ -537,6 +538,8 @@ export const WritingFluencyDrill: React.FC<WritingFluencyDrillProps> = ({
                   Target for next session: <strong>{result.evaluation.metrics.targetWpm} WPM</strong>
                 </p>
               </div>
+
+              <FeedbackReaction dayNumber={dayNumber} section="Writing Fluency Drill" />
 
               <button onClick={handleReset} className="btn-secondary try-again-btn">
                 Practice Again

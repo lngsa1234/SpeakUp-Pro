@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { FeedbackReaction } from './FeedbackReaction';
 import type { WritingEvaluation } from '../types';
 
 interface WritingPracticeProps {
@@ -281,6 +282,8 @@ export const WritingPractice: React.FC<WritingPracticeProps> = ({
                   </ul>
                 </div>
               )}
+
+              <FeedbackReaction dayNumber={dayNumber} section="Writing AI Feedback" />
 
               <button onClick={handleReset} className="btn-secondary try-again-btn">
                 Try Again

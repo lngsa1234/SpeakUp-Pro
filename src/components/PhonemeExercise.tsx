@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTextToSpeech } from '../hooks/useTextToSpeech';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
+import { FeedbackReaction } from './FeedbackReaction';
 import { getDailyPhonemeExercise, type MinimalPair, type PhonemeExercise as PhonemeExerciseData } from '../data/phonemeExercises';
 import type { PhonemeResult, PhonemeSessionResult } from '../types';
 import './PhonemeExercise.css';
@@ -378,6 +379,8 @@ export const PhonemeExercise: React.FC<PhonemeExerciseProps> = ({
                   </div>
                 ))}
               </div>
+              <FeedbackReaction dayNumber={dayNumber} section="Phoneme Exercise" />
+
               <button className="btn-secondary" onClick={startExercise}>
                 Practice Again
               </button>

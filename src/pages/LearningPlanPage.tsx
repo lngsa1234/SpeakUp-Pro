@@ -73,15 +73,11 @@ export const LearningPlanPage: React.FC = () => {
   return (
     <div className="learning-plan-page">
       <div className="plan-header">
-        <button onClick={() => navigate('/')} className="back-button">&larr; Back to Home</button>
+        <button onClick={() => navigate(user ? '/dashboard' : '/')} className="back-button">&larr; Back</button>
         <div className="plan-header-top">
           <h1>60-Day PM + Business English Learning Plan</h1>
           <div className="plan-header-actions">
-            {user ? (
-              <button onClick={() => navigate('/dashboard')} className="btn-secondary">
-                Go to Dashboard
-              </button>
-            ) : (
+            {!user && (
               <button onClick={() => navigate('/auth')} className="btn-secondary sign-in-prompt-btn">
                 Sign in to track progress
               </button>

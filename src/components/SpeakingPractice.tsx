@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import { api } from '../services/api';
+import { FeedbackReaction } from './FeedbackReaction';
 import type { SpeakingEvaluation } from '../types';
 
 interface SpeakingPracticeProps {
@@ -401,6 +402,8 @@ export const SpeakingPractice: React.FC<SpeakingPracticeProps> = ({
                   </ul>
                 </div>
               )}
+
+              <FeedbackReaction dayNumber={dayNumber} section="Speaking AI Feedback" />
 
               <button onClick={handleReset} className="btn-secondary try-again-btn">
                 Try Again

@@ -17,13 +17,14 @@ type FeedbackItem = {
   } | null;
 };
 
-type FilterType = 'all' | 'general' | 'bug' | 'feature' | 'content';
+type FilterType = 'all' | 'general' | 'bug' | 'feature' | 'content' | 'ai_feedback';
 
 const TYPE_LABELS: Record<string, string> = {
   general: 'General',
   bug: 'Bug Report',
   feature: 'Feature Request',
   content: 'Content',
+  ai_feedback: 'AI Feedback',
 };
 
 export const AdminFeedbackPage: React.FC = () => {
@@ -47,12 +48,40 @@ export const AdminFeedbackPage: React.FC = () => {
 
   const loadFeedback = async () => {
     try {
+      // Try with join first
       const { data, error } = await supabase
         .from('feedback')
         .select('id, user_id, type, message, created_at, users(full_name, email)')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.warn('Join query failed, falling back to separate queries:', error);
+        // Fallback: query feedback without join, then fetch users separately
+        const { data: feedbackData, error: fbError } = await supabase
+          .from('feedback')
+          .select('id, user_id, type, message, created_at')
+          .order('created_at', { ascending: false });
+
+        if (fbError) throw fbError;
+
+        // Get unique user IDs and fetch their info
+        const userIds = [...new Set((feedbackData || []).map(f => f.user_id))];
+        const { data: usersData } = await supabase
+          .from('users')
+          .select('id, full_name, email')
+          .in('id', userIds);
+
+        const usersMap = new Map((usersData || []).map(u => [u.id, u]));
+
+        const enriched = (feedbackData || []).map(f => ({
+          ...f,
+          users: usersMap.get(f.user_id) || null,
+        }));
+
+        setFeedback(enriched as unknown as FeedbackItem[]);
+        return;
+      }
+
       setFeedback((data as unknown as FeedbackItem[]) || []);
     } catch (err) {
       console.error('Error loading feedback:', err);
@@ -93,7 +122,7 @@ export const AdminFeedbackPage: React.FC = () => {
       </div>
 
       <div className="admin-filter-tabs">
-        {(['all', 'general', 'bug', 'feature', 'content'] as FilterType[]).map((type) => (
+        {(['all', 'general', 'bug', 'feature', 'content', 'ai_feedback'] as FilterType[]).map((type) => (
           <button
             key={type}
             className={`admin-filter-btn ${filter === type ? 'active' : ''}`}

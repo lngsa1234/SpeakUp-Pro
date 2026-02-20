@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useTextToSpeech } from '../hooks/useTextToSpeech';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
+import { FeedbackReaction } from './FeedbackReaction';
 import type { DrillItem, DrillResult } from '../types';
 import './PronunciationDrill.css';
 
@@ -18,7 +19,7 @@ interface Attempt {
 
 export const PronunciationDrill: React.FC<PronunciationDrillProps> = ({
   items,
-  dayNumber: _dayNumber,
+  dayNumber,
   onComplete,
   onScoreUpdate,
 }) => {
@@ -251,6 +252,8 @@ export const PronunciationDrill: React.FC<PronunciationDrillProps> = ({
                   </div>
                 ))}
               </div>
+              <FeedbackReaction dayNumber={dayNumber} section="Pronunciation Drill" />
+
               <button className="btn-secondary" onClick={startDrill}>
                 Practice Again
               </button>
