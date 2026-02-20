@@ -14,9 +14,12 @@ interface AuthContextType {
   refreshUser: () => Promise<void>;
   changePassword: (newPassword: string) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  resendConfirmation: (email: string) => Promise<void>;
   isRecovery: boolean;
   clearRecovery: () => void;
   isEmailConfirmation: boolean;
+  linkError: string | null;
+  clearLinkError: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,6 +46,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isEmailConfirmation, setIsEmailConfirmation] = useState(() => {
     const hash = window.location.hash;
     return hash.includes('type=signup') || hash.includes('type=email');
+  });
+  const [linkError, setLinkError] = useState<string | null>(() => {
+    const hash = window.location.hash;
+    if (hash.includes('error_code=otp_expired') || hash.includes('error=unauthorized')) {
+      const params = new URLSearchParams(hash.replace('#', ''));
+      const description = params.get('error_description');
+      return description ? decodeURIComponent(description.replace(/\+/g, ' ')) : 'Email link is invalid or has expired';
+    }
+    return null;
   });
   // Ref mirror for synchronous reads inside onAuthStateChange
   const isEmailConfirmationRef = useRef(isEmailConfirmation);
@@ -245,6 +257,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error;
   };
 
+  const resendConfirmation = async (email: string) => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth`,
+      },
+    });
+    if (error) throw error;
+  };
+
+  const clearLinkError = () => {
+    setLinkError(null);
+    // Clean the error params from the URL
+    if (window.location.hash.includes('error')) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  };
+
   const clearRecovery = () => {
     setIsRecovery(false);
   };
@@ -260,9 +291,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     refreshUser,
     changePassword,
     resetPassword,
+    resendConfirmation,
     isRecovery,
     clearRecovery,
     isEmailConfirmation,
+    linkError,
+    clearLinkError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

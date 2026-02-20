@@ -3,6 +3,73 @@ import { LoginForm } from '../components/auth/LoginForm';
 import { SignupForm } from '../components/auth/SignupForm';
 import { useAuth } from '../contexts/AuthContext';
 
+const ResendConfirmationForm: React.FC<{ onDone: () => void }> = ({ onDone }) => {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const { resendConfirmation } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await resendConfirmation(email);
+      setSent(true);
+    } catch (err: any) {
+      setError(err.message || 'Failed to resend confirmation email');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (sent) {
+    return (
+      <div className="auth-form">
+        <h2>Email Sent</h2>
+        <p className="subtitle">
+          A new confirmation link has been sent to <strong>{email}</strong>. Please check your inbox.
+        </p>
+        <button onClick={onDone} className="btn-primary">
+          Back to Sign In
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="auth-form">
+      <h2>Link Expired</h2>
+      <p className="subtitle">
+        Your confirmation link has expired. Enter your email to receive a new one.
+      </p>
+      {error && <div className="error-message">{error}</div>}
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="resend-email">Email</label>
+          <input
+            id="resend-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="your@email.com"
+          />
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Sending...' : 'Resend Confirmation Email'}
+        </button>
+      </form>
+      <p className="toggle-mode">
+        <button onClick={onDone} className="link-button">
+          Back to Sign In
+        </button>
+      </p>
+    </div>
+  );
+};
+
 const SetNewPasswordForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -87,7 +154,7 @@ const SetNewPasswordForm: React.FC = () => {
 
 export const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const { isRecovery, isEmailConfirmation } = useAuth();
+  const { isRecovery, isEmailConfirmation, linkError, clearLinkError } = useAuth();
 
   return (
     <div className="auth-page">
@@ -103,7 +170,9 @@ export const AuthPage: React.FC = () => {
           </div>
         )}
 
-        {isRecovery ? (
+        {linkError ? (
+          <ResendConfirmationForm onDone={clearLinkError} />
+        ) : isRecovery ? (
           <SetNewPasswordForm />
         ) : isLogin ? (
           <LoginForm onToggleMode={() => setIsLogin(false)} />
