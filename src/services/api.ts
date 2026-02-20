@@ -74,26 +74,6 @@ export interface BatchPronunciationEvaluationResponse {
   evaluations: BatchPronunciationEvaluation[];
 }
 
-export interface TranscriptSegment {
-  speaker: string;
-  timestamp: string;
-  text: string;
-  startLine: number;
-  endLine: number;
-}
-
-export interface TranscriptResponse {
-  filename: string;
-  totalLines: number;
-  totalSegments: number;
-  speakers: string[];
-  segments: TranscriptSegment[];
-}
-
-export interface TranscriptListResponse {
-  transcripts: string[];
-}
-
 export interface ResumeEvaluationRequest {
   resumeText: string;
   targetRole?: string;
@@ -225,35 +205,6 @@ export const api = {
 
     if (!response.ok) {
       throw new Error('Failed to evaluate pronunciation');
-    }
-
-    return response.json();
-  },
-
-  // Get transcript content
-  async getTranscript(filename: string, startLine?: number, endLine?: number): Promise<TranscriptResponse> {
-    const params = new URLSearchParams();
-    if (startLine) params.append('startLine', startLine.toString());
-    if (endLine) params.append('endLine', endLine.toString());
-
-    const queryString = params.toString();
-    const url = `${API_URL}/api/transcript/${encodeURIComponent(filename)}${queryString ? `?${queryString}` : ''}`;
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error('Failed to load transcript');
-    }
-
-    return response.json();
-  },
-
-  // List available transcripts
-  async listTranscripts(): Promise<TranscriptListResponse> {
-    const response = await fetch(`${API_URL}/api/transcripts`);
-
-    if (!response.ok) {
-      throw new Error('Failed to list transcripts');
     }
 
     return response.json();

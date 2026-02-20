@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { api } from '../services/api';
-import type { TranscriptSegment } from '../services/api';
 import { getEpisodeByFilename, getSpotifySearchUrl, timestampToSeconds, getSpotifyUrlWithTimestamp, getAppleUrlWithTimestamp } from '../data/podcastEpisodes';
+
+interface TranscriptSegment {
+  speaker: string;
+  timestamp: string;
+  text: string;
+  startLine: number;
+  endLine: number;
+}
 
 interface TranscriptReaderProps {
   filename: string;
@@ -52,11 +58,72 @@ export const TranscriptReader: React.FC<TranscriptReaderProps> = ({
     setLoading(true);
     setError(null);
     try {
-      const response = await api.getTranscript(filename, startLine, endLine);
-      setSegments(response.segments);
-      setSpeakers(response.speakers);
+      const response = await fetch(`/transcript/${encodeURIComponent(filename)}`);
+      if (!response.ok) {
+        throw new Error('Failed to load transcript');
+      }
+      const content = await response.text();
+      const lines = content.split('\n');
+
+      // Parse transcript into structured format (same logic as backend)
+      const parsed: TranscriptSegment[] = [];
+      let currentSegment: TranscriptSegment | null = null;
+      const speakerPattern = /^([A-Za-z\s.]+)\s*\((\d{2}:\d{2}(?::\d{2})?)\):?\s*$/;
+      const timestampOnlyPattern = /^\((\d{2}:\d{2}(?::\d{2})?)\):?\s*$/;
+
+      lines.forEach((line, index) => {
+        const lineNumber = index + 1;
+        const speakerMatch = line.match(speakerPattern);
+        const timestampMatch = line.match(timestampOnlyPattern);
+
+        if (speakerMatch) {
+          if (currentSegment && currentSegment.text.trim()) {
+            parsed.push(currentSegment);
+          }
+          currentSegment = {
+            speaker: speakerMatch[1].trim(),
+            timestamp: speakerMatch[2],
+            text: '',
+            startLine: lineNumber,
+            endLine: lineNumber,
+          };
+        } else if (timestampMatch && currentSegment) {
+          if (currentSegment.text.trim()) {
+            parsed.push(currentSegment);
+          }
+          currentSegment = {
+            speaker: currentSegment.speaker,
+            timestamp: timestampMatch[1],
+            text: '',
+            startLine: lineNumber,
+            endLine: lineNumber,
+          };
+        } else if (currentSegment) {
+          currentSegment.text += (currentSegment.text ? ' ' : '') + line.trim();
+          currentSegment.endLine = lineNumber;
+        }
+      });
+
+      if (currentSegment && (currentSegment as TranscriptSegment).text.trim()) {
+        parsed.push(currentSegment);
+      }
+
+      // Filter by line range if specified
+      let filteredSegments = parsed;
+      if (startLine || endLine) {
+        const start = startLine || 1;
+        const end = endLine || lines.length;
+        filteredSegments = parsed.filter(
+          (seg) => seg.endLine >= start && seg.startLine <= end
+        );
+      }
+
+      const uniqueSpeakers = [...new Set(parsed.map((s) => s.speaker))];
+
+      setSegments(filteredSegments);
+      setSpeakers(uniqueSpeakers);
     } catch (err) {
-      setError('Failed to load transcript. Make sure the backend server is running.');
+      setError('Failed to load transcript.');
       console.error('Transcript load error:', err);
     } finally {
       setLoading(false);
