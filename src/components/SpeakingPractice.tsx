@@ -115,7 +115,10 @@ export const SpeakingPractice: React.FC<SpeakingPracticeProps> = ({
       setEvaluation(response.evaluation);
       onComplete?.(response.evaluation, transcription.trim());
     } catch (err) {
-      setError('Failed to evaluate your speaking. Please try again.');
+      const message = err instanceof DOMException && err.name === 'AbortError'
+        ? 'Request timed out. The server may be waking up — please try again.'
+        : 'Failed to evaluate your speaking. Please try again.';
+      setError(message);
       console.error('Evaluation error:', err);
     } finally {
       setIsEvaluating(false);

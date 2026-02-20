@@ -2,6 +2,29 @@ import type { Message, ConversationFeedback, WritingEvaluation, SpeakingEvaluati
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
+// Fetch with timeout and auto-retry (handles Render cold starts)
+async function fetchWithRetry(url: string, options: RequestInit, retries = 1, timeoutMs = 60000): Promise<Response> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const response = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(timeout);
+      if (response.ok || attempt === retries) return response;
+      // Retry on server errors (5xx) which can happen during cold start
+      if (response.status >= 500) continue;
+      return response;
+    } catch (err) {
+      clearTimeout(timeout);
+      if (attempt === retries) throw err;
+      // Wait briefly before retry
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  }
+  throw new Error('Request failed after retries');
+}
+
 export interface ChatRequest {
   conversationId: string;
   messages: Message[];
@@ -110,7 +133,7 @@ export interface WritingFluencyEvaluationResponse {
 export const api = {
   // Send message to AI agent and get response
   async sendMessage(request: ChatRequest): Promise<ChatResponse> {
-    const response = await fetch(`${API_URL}/api/chat`, {
+    const response = await fetchWithRetry(`${API_URL}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -127,7 +150,7 @@ export const api = {
 
   // Get conversation feedback from AI agent
   async getFeedback(request: FeedbackRequest): Promise<FeedbackResponse> {
-    const response = await fetch(`${API_URL}/api/feedback`, {
+    const response = await fetchWithRetry(`${API_URL}/api/feedback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -144,7 +167,7 @@ export const api = {
 
   // Evaluate writing practice
   async evaluateWriting(request: WritingEvaluationRequest): Promise<WritingEvaluationResponse> {
-    const response = await fetch(`${API_URL}/api/evaluate-writing`, {
+    const response = await fetchWithRetry(`${API_URL}/api/evaluate-writing`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -161,7 +184,7 @@ export const api = {
 
   // Evaluate speaking practice
   async evaluateSpeaking(request: SpeakingEvaluationRequest): Promise<SpeakingEvaluationResponse> {
-    const response = await fetch(`${API_URL}/api/evaluate-speaking`, {
+    const response = await fetchWithRetry(`${API_URL}/api/evaluate-speaking`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -178,7 +201,7 @@ export const api = {
 
   // Evaluate pronunciation for single word (kept for backwards compatibility)
   async evaluatePronunciation(request: PronunciationEvaluationRequest): Promise<PronunciationEvaluationResponse> {
-    const response = await fetch(`${API_URL}/api/evaluate-pronunciation`, {
+    const response = await fetchWithRetry(`${API_URL}/api/evaluate-pronunciation`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -195,7 +218,7 @@ export const api = {
 
   // Batch evaluate pronunciation for multiple words (more cost-effective)
   async evaluatePronunciationBatch(attempts: PronunciationAttempt[]): Promise<BatchPronunciationEvaluationResponse> {
-    const response = await fetch(`${API_URL}/api/evaluate-pronunciation-batch`, {
+    const response = await fetchWithRetry(`${API_URL}/api/evaluate-pronunciation-batch`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -212,7 +235,7 @@ export const api = {
 
   // Evaluate resume for PM roles
   async evaluateResume(request: ResumeEvaluationRequest): Promise<ResumeEvaluationResponse> {
-    const response = await fetch(`${API_URL}/api/evaluate-resume`, {
+    const response = await fetchWithRetry(`${API_URL}/api/evaluate-resume`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -229,7 +252,7 @@ export const api = {
 
   // Evaluate LinkedIn profile for PM roles
   async evaluateLinkedIn(request: LinkedInEvaluationRequest): Promise<LinkedInEvaluationResponse> {
-    const response = await fetch(`${API_URL}/api/evaluate-linkedin`, {
+    const response = await fetchWithRetry(`${API_URL}/api/evaluate-linkedin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -246,7 +269,7 @@ export const api = {
 
   // Evaluate writing fluency drill
   async evaluateWritingFluency(request: WritingFluencyEvaluationRequest): Promise<WritingFluencyEvaluationResponse> {
-    const response = await fetch(`${API_URL}/api/evaluate-writing-fluency`, {
+    const response = await fetchWithRetry(`${API_URL}/api/evaluate-writing-fluency`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

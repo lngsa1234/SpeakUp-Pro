@@ -25,19 +25,27 @@ export const WritingPractice: React.FC<WritingPracticeProps> = ({
   isAuthenticated = true,
 }) => {
   const [text, setText] = useState(savedText || '');
+  const [submittedText, setSubmittedText] = useState(savedText || '');
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [evaluation, setEvaluation] = useState<WritingEvaluation | null>(savedEvaluation || null);
   const [error, setError] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(!savedEvaluation);
+  const [isRetrying, setIsRetrying] = useState(false);
 
   // Sync state when saved props change (e.g., after loading from database or changing days)
+  // but NOT when the user is actively retrying
   useEffect(() => {
-    setText(savedText || '');
+    if (!isRetrying) {
+      setText(savedText || '');
+      setSubmittedText(savedText || '');
+    }
   }, [savedText]);
 
   useEffect(() => {
-    setEvaluation(savedEvaluation || null);
-    setIsExpanded(!savedEvaluation);
+    if (!isRetrying) {
+      setEvaluation(savedEvaluation || null);
+      setIsExpanded(!savedEvaluation);
+    }
   }, [savedEvaluation]);
 
   const handleSubmit = async () => {
@@ -63,10 +71,15 @@ export const WritingPractice: React.FC<WritingPracticeProps> = ({
         phrasesToUse,
       });
 
+      setSubmittedText(text.trim());
       setEvaluation(response.evaluation);
+      setIsRetrying(false);
       onComplete?.(response.evaluation, text.trim());
     } catch (err) {
-      setError('Failed to evaluate your writing. Please try again.');
+      const message = err instanceof DOMException && err.name === 'AbortError'
+        ? 'Request timed out. The server may be waking up — please try again.'
+        : 'Failed to evaluate your writing. Please try again.';
+      setError(message);
       console.error('Evaluation error:', err);
     } finally {
       setIsEvaluating(false);
@@ -75,8 +88,10 @@ export const WritingPractice: React.FC<WritingPracticeProps> = ({
 
   const handleReset = () => {
     setText('');
+    setSubmittedText('');
     setEvaluation(null);
     setError(null);
+    setIsRetrying(true);
   };
 
   const getScoreColor = (score: number): string => {
@@ -157,10 +172,10 @@ export const WritingPractice: React.FC<WritingPracticeProps> = ({
                 <div className="score-label">{evaluation.overallScore.label}</div>
               </div>
 
-              {text && (
+              {submittedText && (
                 <div className="your-answer-box">
                   <h4>Your Writing</h4>
-                  <p className="your-answer-text">{text}</p>
+                  <p className="your-answer-text">{submittedText}</p>
                 </div>
               )}
 

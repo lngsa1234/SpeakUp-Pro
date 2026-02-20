@@ -48,11 +48,11 @@ export const DayDetailPage: React.FC = () => {
   const [savedFluencyResult, setSavedFluencyResult] = useState<WritingFluencyResult | null>(null);
   const [sectionReactions, setSectionReactions] = useState<Record<string, 'up' | 'down'>>({});
 
+  // Reset all state when changing days
   useEffect(() => {
     const dayNum = parseInt(dayNumber || '1');
     const foundDay = getDay(dayNum);
     if (foundDay) {
-      // Reset all state when changing days
       setDay(foundDay);
       setIsCompleted(false);
       setNotes('');
@@ -76,7 +76,13 @@ export const DayDetailPage: React.FC = () => {
       setFluencyScore(null);
       setSavedFluencyResult(null);
       // Don't reset difficultWords - they persist across days
+    }
+  }, [dayNumber]);
 
+  // Load progress when day changes or user becomes available (without resetting state)
+  useEffect(() => {
+    const dayNum = parseInt(dayNumber || '1');
+    if (user && getDay(dayNum)) {
       loadDayProgress(dayNum);
     }
   }, [dayNumber, user]);
