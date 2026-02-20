@@ -200,6 +200,7 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
+      {user && !loading && (
       <div className="progress-section">
         <div className="progress-card">
           <div className="progress-stats">
@@ -216,11 +217,11 @@ export const DashboardPage: React.FC = () => {
               <span className="stat-label">Complete</span>
             </div>
             <div className="stat">
-              <span className="stat-number">{user?.current_streak ?? 0}</span>
+              <span className="stat-number">{user.current_streak}</span>
               <span className="stat-label">Day Streak 🔥</span>
             </div>
             <div className="stat">
-              <span className="stat-number">{user?.longest_streak ?? 0}</span>
+              <span className="stat-number">{user.longest_streak}</span>
               <span className="stat-label">Best Streak 🏆</span>
             </div>
           </div>
@@ -229,6 +230,7 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
 
       <div className="action-section">
         {nextDay <= 60 && (

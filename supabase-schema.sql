@@ -133,43 +133,7 @@ CREATE INDEX IF NOT EXISTS idx_vocabulary_user_id ON public.vocabulary(user_id);
 CREATE INDEX IF NOT EXISTS idx_vocabulary_mastery ON public.vocabulary(mastery_level);
 CREATE INDEX IF NOT EXISTS idx_feedback_conversation_id ON public.conversation_feedback(conversation_id);
 
--- Function to update user streak
--- Single UPDATE so streak logic reads the old last_session_date before overwriting it
-CREATE OR REPLACE FUNCTION update_user_streak()
-RETURNS TRIGGER AS $$
-BEGIN
-  UPDATE public.users
-  SET
-    total_sessions = CASE
-      WHEN last_session_date = CURRENT_DATE THEN total_sessions
-      ELSE total_sessions + 1
-    END,
-    current_streak = CASE
-      WHEN last_session_date = CURRENT_DATE THEN current_streak
-      WHEN last_session_date = CURRENT_DATE - INTERVAL '1 day' THEN current_streak + 1
-      ELSE 1
-    END,
-    longest_streak = GREATEST(
-      longest_streak,
-      CASE
-        WHEN last_session_date = CURRENT_DATE THEN current_streak
-        WHEN last_session_date = CURRENT_DATE - INTERVAL '1 day' THEN current_streak + 1
-        ELSE 1
-      END
-    ),
-    last_session_date = CURRENT_DATE
-  WHERE id = NEW.user_id;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Trigger to update streak when conversation ends
-CREATE TRIGGER update_streak_on_conversation_end
-  AFTER UPDATE OF ended_at ON public.conversations
-  FOR EACH ROW
-  WHEN (NEW.ended_at IS NOT NULL AND OLD.ended_at IS NULL)
-  EXECUTE FUNCTION update_user_streak();
+-- Streak is updated client-side when a day plan is marked complete (DayDetailPage.tsx)
 
 -- ============================================
 -- Learning Progress Tracking
