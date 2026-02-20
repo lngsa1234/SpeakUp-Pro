@@ -58,7 +58,8 @@ export const TranscriptReader: React.FC<TranscriptReaderProps> = ({
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/transcript/${encodeURIComponent(filename)}`);
+      const file = filename.endsWith('.txt') ? filename : `${filename}.txt`;
+      const response = await fetch(`/transcript/${encodeURIComponent(file)}`);
       if (!response.ok) {
         throw new Error('Failed to load transcript');
       }
