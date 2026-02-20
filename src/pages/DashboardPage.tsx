@@ -5,7 +5,7 @@ import { supabase } from '../services/supabase';
 import { weekInfo, getDaysForWeek, calculateProgress } from '../data/learningPlan';
 
 export const DashboardPage: React.FC = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [completedDays, setCompletedDays] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +19,7 @@ export const DashboardPage: React.FC = () => {
 
   useEffect(() => {
     loadProgress();
+    validateStreak();
   }, [user]);
 
   useEffect(() => {
@@ -52,6 +53,25 @@ export const DashboardPage: React.FC = () => {
       console.error('Error loading progress:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const validateStreak = async () => {
+    if (!user || !user.last_session_date || user.current_streak === 0) return;
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const [ly, lm, ld] = user.last_session_date.split('T')[0].split('-').map(Number);
+    const lastDate = new Date(ly, lm - 1, ld);
+    const diffDays = Math.round((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    // If more than 1 day has passed since last session, streak is broken
+    if (diffDays > 1) {
+      await supabase
+        .from('users')
+        .update({ current_streak: 0 })
+        .eq('id', user.id);
+      refreshUser();
     }
   };
 
