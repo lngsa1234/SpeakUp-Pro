@@ -69,8 +69,12 @@ export const TranscriptReader: React.FC<TranscriptReaderProps> = ({
       // Parse transcript into structured format (same logic as backend)
       const parsed: TranscriptSegment[] = [];
       let currentSegment: TranscriptSegment | null = null;
+      // Format 1: "Speaker Name (HH:MM:SS):" on its own line
       const speakerPattern = /^([A-Za-z\s.]+)\s*\((\d{2}:\d{2}(?::\d{2})?)\):?\s*$/;
       const timestampOnlyPattern = /^\((\d{2}:\d{2}(?::\d{2})?)\):?\s*$/;
+      // Format 2: "[HH:MM:SS] Speaker: text" all on one line
+      const bracketSpeakerPattern = /^\[(\d{2}:\d{2}(?::\d{2})?)\]\s+([A-Za-z][A-Za-z ]*?):\s+(.*)/;
+      const bracketTimestampPattern = /^\[(\d{2}:\d{2}(?::\d{2})?)\]\s+(.*)/;
 
       lines.forEach((line, index) => {
         const lineNumber = index + 1;
@@ -99,9 +103,36 @@ export const TranscriptReader: React.FC<TranscriptReaderProps> = ({
             startLine: lineNumber,
             endLine: lineNumber,
           };
-        } else if (currentSegment) {
-          currentSegment.text += (currentSegment.text ? ' ' : '') + line.trim();
-          currentSegment.endLine = lineNumber;
+        } else {
+          const bracketSpeakerMatch = line.match(bracketSpeakerPattern);
+          const bracketTimestampMatch = line.match(bracketTimestampPattern);
+
+          if (bracketSpeakerMatch) {
+            if (currentSegment && currentSegment.text.trim()) {
+              parsed.push(currentSegment);
+            }
+            currentSegment = {
+              speaker: bracketSpeakerMatch[2].trim(),
+              timestamp: bracketSpeakerMatch[1],
+              text: bracketSpeakerMatch[3] || '',
+              startLine: lineNumber,
+              endLine: lineNumber,
+            };
+          } else if (bracketTimestampMatch && currentSegment) {
+            if (currentSegment.text.trim()) {
+              parsed.push(currentSegment);
+            }
+            currentSegment = {
+              speaker: currentSegment.speaker,
+              timestamp: bracketTimestampMatch[1],
+              text: bracketTimestampMatch[2] || '',
+              startLine: lineNumber,
+              endLine: lineNumber,
+            };
+          } else if (currentSegment) {
+            currentSegment.text += (currentSegment.text ? ' ' : '') + line.trim();
+            currentSegment.endLine = lineNumber;
+          }
         }
       });
 

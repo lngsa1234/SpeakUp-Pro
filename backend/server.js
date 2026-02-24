@@ -243,8 +243,8 @@ app.post('/api/evaluate-writing', async (req, res) => {
     console.log('Vocabulary to check:', vocabularyToUse?.join(', '));
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20250929',
-      max_tokens: 3000,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1500,
       system: WRITING_EVALUATION_PROMPT,
       messages: [{
         role: 'user',
@@ -295,31 +295,24 @@ Return ONLY valid JSON, no other text.`
       }]
     });
 
-    console.log('Claude response received');
-    const evaluation = parseJSONResponse(response.content[0].text);
-    console.log('Evaluation parsed successfully');
+    const rawText = response.content[0].text;
+    console.log('Claude response received, length:', rawText?.length);
 
+    let evaluation;
+    try {
+      evaluation = parseJSONResponse(rawText);
+    } catch (parseError) {
+      console.error('Writing evaluation JSON parse error:', parseError.message);
+      console.error('Raw Claude response:', rawText?.substring(0, 500));
+      return res.status(500).json({ error: 'Failed to parse AI evaluation. Please try again.' });
+    }
+
+    console.log('Evaluation parsed successfully');
     res.json({ evaluation });
 
   } catch (error) {
-    console.error('Writing evaluation error:', error);
-
-    // Return a fallback evaluation on error
-    if (error.message?.includes('JSON')) {
-      res.json({
-        evaluation: {
-          overallScore: { score: 6, label: 'Fair' },
-          grammar: { score: { score: 6, label: 'Fair' }, corrections: [] },
-          vocabulary: { score: { score: 6, label: 'Fair' }, wordsUsedFromLesson: [], suggestedUpgrades: [] },
-          content: { score: { score: 6, label: 'Fair' }, feedback: 'Good effort! Keep practicing.', relevanceToPrompt: true },
-          fluency: { score: { score: 6, label: 'Fair' }, feedback: 'Your writing shows good potential.' },
-          encouragement: 'Great job completing this exercise! Every writing practice makes you better.',
-          nextSteps: ['Try to incorporate more vocabulary from the lesson', 'Practice writing longer responses']
-        }
-      });
-    } else {
-      res.status(500).json({ error: 'Failed to evaluate writing', details: error.message });
-    }
+    console.error('Writing evaluation error:', error.message || error);
+    res.status(500).json({ error: 'Failed to evaluate writing', details: error.message });
   }
 });
 
@@ -337,6 +330,9 @@ app.post('/api/evaluate-speaking', async (req, res) => {
     console.log('Day:', dayNumber);
     console.log('Transcription length:', transcription.length);
     console.log('Vocabulary to check:', vocabularyToUse?.join(', '));
+
+    // Sanitize transcription to prevent prompt injection / broken strings
+    const safeTranscription = transcription.replace(/"/g, '\\"');
 
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-5-20250929',
@@ -356,7 +352,7 @@ ${vocabularyToUse?.join(', ') || 'None specified'}
 ${phrasesToUse?.join(', ') || 'None specified'}
 
 **Student's Speech (Transcribed):**
-"${transcription}"
+"${safeTranscription}"
 
 Provide your evaluation as JSON with this EXACT structure:
 {
@@ -391,32 +387,24 @@ Return ONLY valid JSON, no other text.`
       }]
     });
 
-    console.log('Claude response received');
-    const evaluation = parseJSONResponse(response.content[0].text);
-    console.log('Evaluation parsed successfully');
+    const rawText = response.content[0].text;
+    console.log('Claude response received, length:', rawText?.length);
 
+    let evaluation;
+    try {
+      evaluation = parseJSONResponse(rawText);
+    } catch (parseError) {
+      console.error('Speaking evaluation JSON parse error:', parseError.message);
+      console.error('Raw Claude response:', rawText?.substring(0, 500));
+      return res.status(500).json({ error: 'Failed to parse AI evaluation. Please try again.' });
+    }
+
+    console.log('Evaluation parsed successfully');
     res.json({ evaluation });
 
   } catch (error) {
-    console.error('Speaking evaluation error:', error);
-
-    // Return a fallback evaluation on error
-    if (error.message?.includes('JSON')) {
-      res.json({
-        evaluation: {
-          overallScore: { score: 6, label: 'Fair' },
-          transcription: req.body.transcription || '',
-          pronunciation: { score: { score: 6, label: 'Fair' }, feedback: 'Good effort on pronunciation!', difficultWords: [] },
-          grammar: { score: { score: 6, label: 'Fair' }, corrections: [] },
-          vocabulary: { score: { score: 6, label: 'Fair' }, wordsUsedFromLesson: [], feedback: 'Try to use more vocabulary from the lesson.' },
-          fluency: { score: { score: 6, label: 'Fair' }, feedback: 'Good attempt at speaking fluently.', fillerWordsUsed: [] },
-          encouragement: 'Great job practicing speaking! Every attempt builds your confidence.',
-          practiceRecommendations: ['Try speaking for longer periods', 'Practice with the key phrases from the lesson']
-        }
-      });
-    } else {
-      res.status(500).json({ error: 'Failed to evaluate speaking', details: error.message });
-    }
+    console.error('Speaking evaluation error:', error.message || error);
+    res.status(500).json({ error: 'Failed to evaluate speaking', details: error.message });
   }
 });
 
@@ -466,29 +454,24 @@ Return ONLY valid JSON array, no other text.`
       }]
     });
 
-    console.log('Claude response received');
-    const evaluations = parseJSONResponse(response.content[0].text);
-    console.log('Batch evaluation parsed successfully');
+    const rawText = response.content[0].text;
+    console.log('Claude response received, length:', rawText?.length);
 
+    let evaluations;
+    try {
+      evaluations = parseJSONResponse(rawText);
+    } catch (parseError) {
+      console.error('Batch pronunciation JSON parse error:', parseError.message);
+      console.error('Raw Claude response:', rawText?.substring(0, 500));
+      return res.status(500).json({ error: 'Failed to parse pronunciation evaluation. Please try again.' });
+    }
+
+    console.log('Batch evaluation parsed successfully');
     res.json({ evaluations });
 
   } catch (error) {
-    console.error('Batch pronunciation evaluation error:', error);
-
-    // Return fallback evaluations on error
-    const { attempts } = req.body;
-    if (attempts && Array.isArray(attempts)) {
-      res.json({
-        evaluations: attempts.map(a => ({
-          word: a.word,
-          score: 5,
-          feedback: 'Good attempt! Keep practicing.',
-          isCorrect: false
-        }))
-      });
-    } else {
-      res.status(500).json({ error: 'Failed to evaluate pronunciation', details: error.message });
-    }
+    console.error('Batch pronunciation evaluation error:', error.message || error);
+    res.status(500).json({ error: 'Failed to evaluate pronunciation', details: error.message });
   }
 });
 
@@ -809,8 +792,8 @@ app.post('/api/evaluate-writing-fluency', async (req, res) => {
     console.log('WPM:', wpm);
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20250929',
-      max_tokens: 3000,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1500,
       system: WRITING_FLUENCY_EVALUATION_PROMPT,
       messages: [{
         role: 'user',
@@ -861,50 +844,24 @@ Return ONLY valid JSON, no other text.`
       }]
     });
 
-    console.log('Claude response received');
-    const evaluation = parseJSONResponse(response.content[0].text);
-    console.log('Fluency evaluation parsed successfully');
+    const rawText = response.content[0].text;
+    console.log('Claude response received, length:', rawText?.length);
 
+    let evaluation;
+    try {
+      evaluation = parseJSONResponse(rawText);
+    } catch (parseError) {
+      console.error('Writing fluency JSON parse error:', parseError.message);
+      console.error('Raw Claude response:', rawText?.substring(0, 500));
+      return res.status(500).json({ error: 'Failed to parse AI evaluation. Please try again.' });
+    }
+
+    console.log('Fluency evaluation parsed successfully');
     res.json({ evaluation });
 
   } catch (error) {
-    console.error('Writing fluency evaluation error:', error);
-
-    // Return a fallback evaluation on error
-    const { wordCount, wpm } = req.body;
-    if (error.message?.includes('JSON')) {
-      res.json({
-        evaluation: {
-          overallFluencyScore: { score: 6, label: 'Fair' },
-          metrics: {
-            wordsWritten: wordCount || 0,
-            wordsPerMinute: wpm || 0,
-            wpmRating: { score: 6, label: 'Fair' },
-            targetWpm: 20
-          },
-          sentenceAnalysis: {
-            score: { score: 6, label: 'Fair' },
-            totalSentences: 0,
-            avgWordsPerSentence: 0,
-            varietyFeedback: 'Keep practicing to develop more sentence variety.'
-          },
-          flowAndCoherence: {
-            score: { score: 6, label: 'Fair' },
-            feedback: 'Your ideas are coming together. Keep writing!',
-            transitionsUsed: [],
-            suggestedTransitions: ['First', 'Then', 'However']
-          },
-          writingMomentum: {
-            score: { score: 6, label: 'Fair' },
-            feedback: 'Good effort maintaining your writing flow.'
-          },
-          encouragement: 'Great job completing this exercise! Every session builds your fluency.',
-          nextSteps: ['Try to write without stopping', 'Use transition words to connect ideas', 'Focus on getting words down, not perfection']
-        }
-      });
-    } else {
-      res.status(500).json({ error: 'Failed to evaluate writing fluency', details: error.message });
-    }
+    console.error('Writing fluency evaluation error:', error.message || error);
+    res.status(500).json({ error: 'Failed to evaluate writing fluency', details: error.message });
   }
 });
 
@@ -928,8 +885,12 @@ app.get('/api/transcript/:filename', async (req, res) => {
     // Parse transcript into structured format
     const segments = [];
     let currentSegment = null;
+    // Format 1: "Speaker Name (HH:MM:SS):" on its own line
     const speakerPattern = /^([A-Za-z\s.]+)\s*\((\d{2}:\d{2}(?::\d{2})?)\):?\s*$/;
     const timestampOnlyPattern = /^\((\d{2}:\d{2}(?::\d{2})?)\):?\s*$/;
+    // Format 2: "[HH:MM:SS] Speaker: text" all on one line
+    const bracketSpeakerPattern = /^\[(\d{2}:\d{2}(?::\d{2})?)\]\s+([A-Za-z][A-Za-z ]*?):\s+(.*)/;
+    const bracketTimestampPattern = /^\[(\d{2}:\d{2}(?::\d{2})?)\]\s+(.*)/;
 
     lines.forEach((line, index) => {
       const lineNumber = index + 1;
@@ -937,7 +898,7 @@ app.get('/api/transcript/:filename', async (req, res) => {
       const timestampMatch = line.match(timestampOnlyPattern);
 
       if (speakerMatch) {
-        // New speaker segment
+        // New speaker segment (Format 1)
         if (currentSegment && currentSegment.text.trim()) {
           segments.push(currentSegment);
         }
@@ -960,10 +921,39 @@ app.get('/api/transcript/:filename', async (req, res) => {
           startLine: lineNumber,
           endLine: lineNumber
         };
-      } else if (currentSegment) {
-        // Add text to current segment
-        currentSegment.text += (currentSegment.text ? ' ' : '') + line.trim();
-        currentSegment.endLine = lineNumber;
+      } else {
+        const bracketSpeakerMatch = line.match(bracketSpeakerPattern);
+        const bracketTimestampMatch = line.match(bracketTimestampPattern);
+
+        if (bracketSpeakerMatch) {
+          // New speaker segment (Format 2)
+          if (currentSegment && currentSegment.text.trim()) {
+            segments.push(currentSegment);
+          }
+          currentSegment = {
+            speaker: bracketSpeakerMatch[2].trim(),
+            timestamp: bracketSpeakerMatch[1],
+            text: bracketSpeakerMatch[3] || '',
+            startLine: lineNumber,
+            endLine: lineNumber
+          };
+        } else if (bracketTimestampMatch && currentSegment) {
+          // Continuation with new timestamp, same speaker (Format 2)
+          if (currentSegment.text.trim()) {
+            segments.push(currentSegment);
+          }
+          currentSegment = {
+            speaker: currentSegment.speaker,
+            timestamp: bracketTimestampMatch[1],
+            text: bracketTimestampMatch[2] || '',
+            startLine: lineNumber,
+            endLine: lineNumber
+          };
+        } else if (currentSegment) {
+          // Add text to current segment
+          currentSegment.text += (currentSegment.text ? ' ' : '') + line.trim();
+          currentSegment.endLine = lineNumber;
+        }
       }
     });
 
