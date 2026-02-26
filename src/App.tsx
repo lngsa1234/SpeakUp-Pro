@@ -7,6 +7,7 @@ import { LearningPlanPage } from './pages/LearningPlanPage';
 import { DayDetailPage } from './pages/DayDetailPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { AdminFeedbackPage } from './pages/AdminFeedbackPage';
+import { AdminWordBankPage } from './pages/AdminWordBankPage';
 import { LandingPage } from './pages/LandingPage';
 import './App.css';
 
@@ -79,6 +80,14 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <AdminFeedbackPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/word-bank"
+        element={
+          <PrivateRoute>
+            <AdminWordBankPage />
           </PrivateRoute>
         }
       />

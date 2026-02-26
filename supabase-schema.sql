@@ -626,3 +626,65 @@ CREATE POLICY "Users can update own writing fluency drills"
 CREATE INDEX IF NOT EXISTS idx_writing_fluency_drills_user_id ON public.writing_fluency_drills(user_id);
 CREATE INDEX IF NOT EXISTS idx_writing_fluency_drills_user_day ON public.writing_fluency_drills(user_id, day_number);
 CREATE INDEX IF NOT EXISTS idx_writing_fluency_drills_wpm ON public.writing_fluency_drills(wpm DESC);
+
+-- ============================================
+-- Reasoning Drills
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS public.reasoning_drills (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  day_number INTEGER NOT NULL,
+  mode TEXT NOT NULL, -- 'prep' or 'quickfire'
+  question TEXT,
+  response TEXT,
+  evaluation JSONB,
+  score NUMERIC,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id, day_number)
+);
+
+ALTER TABLE public.reasoning_drills ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own reasoning drills"
+  ON public.reasoning_drills FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own reasoning drills"
+  ON public.reasoning_drills FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own reasoning drills"
+  ON public.reasoning_drills FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE INDEX IF NOT EXISTS idx_reasoning_drills_user_id ON public.reasoning_drills(user_id);
+CREATE INDEX IF NOT EXISTS idx_reasoning_drills_user_day ON public.reasoning_drills(user_id, day_number);
+
+-- ============================================
+-- Admin Word Bank
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS public.admin_word_bank (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  word TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.admin_word_bank ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authenticated users can view word bank"
+  ON public.admin_word_bank FOR SELECT
+  USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can insert word bank"
+  ON public.admin_word_bank FOR INSERT
+  WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can delete word bank"
+  ON public.admin_word_bank FOR DELETE
+  USING (auth.role() = 'authenticated');
+
+CREATE INDEX IF NOT EXISTS idx_admin_word_bank_word ON public.admin_word_bank(word);
+CREATE INDEX IF NOT EXISTS idx_admin_word_bank_created ON public.admin_word_bank(created_at DESC);

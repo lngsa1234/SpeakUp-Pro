@@ -148,9 +148,14 @@ export const DashboardPage: React.FC = () => {
         </div>
         <div className="dashboard-header-actions">
           {user?.email === 'lngsa.wang@gmail.com' && (
-            <button onClick={() => navigate('/admin/feedback')} className="btn-secondary">
-              Admin: Feedback
-            </button>
+            <>
+              <button onClick={() => navigate('/admin/feedback')} className="btn-secondary">
+                Admin: Feedback
+              </button>
+              <button onClick={() => navigate('/admin/word-bank')} className="btn-secondary">
+                Admin: Word Bank
+              </button>
+            </>
           )}
           <div className="feedback-button-wrapper" ref={feedbackRef}>
             <button onClick={() => setShowFeedbackDialog(!showFeedbackDialog)} className="btn-secondary">
