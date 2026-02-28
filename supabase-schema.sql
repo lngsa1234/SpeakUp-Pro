@@ -669,6 +669,8 @@ CREATE INDEX IF NOT EXISTS idx_reasoning_drills_user_day ON public.reasoning_dri
 CREATE TABLE IF NOT EXISTS public.admin_word_bank (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   word TEXT NOT NULL UNIQUE,
+  input_count INTEGER NOT NULL DEFAULT 1,
+  last_input_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -681,6 +683,10 @@ CREATE POLICY "Authenticated users can view word bank"
 CREATE POLICY "Authenticated users can insert word bank"
   ON public.admin_word_bank FOR INSERT
   WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can update word bank"
+  ON public.admin_word_bank FOR UPDATE
+  USING (auth.role() = 'authenticated');
 
 CREATE POLICY "Authenticated users can delete word bank"
   ON public.admin_word_bank FOR DELETE
