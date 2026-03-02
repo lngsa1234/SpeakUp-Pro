@@ -11,6 +11,8 @@ import { PronunciationDrill } from '../components/PronunciationDrill';
 import { PhonemeExercise } from '../components/PhonemeExercise';
 import { WritingFluencyDrill } from '../components/WritingFluencyDrill';
 import type { WritingFluencyResult } from '../components/WritingFluencyDrill';
+import { ReasoningDrill } from '../components/ReasoningDrill';
+import type { ReasoningDrillResult } from '../components/ReasoningDrill';
 import type { WritingEvaluation, SpeakingEvaluation, DrillItem, DrillResult, PhonemeSessionResult } from '../types';
 
 export const DayDetailPage: React.FC = () => {
@@ -46,6 +48,8 @@ export const DayDetailPage: React.FC = () => {
   const [phonemeScore, setPhonemeScore] = useState<number | null>(null);
   const [fluencyScore, setFluencyScore] = useState<number | null>(null);
   const [savedFluencyResult, setSavedFluencyResult] = useState<WritingFluencyResult | null>(null);
+  const [reasoningScore, setReasoningScore] = useState<number | null>(null);
+  const [savedReasoningResult, setSavedReasoningResult] = useState<ReasoningDrillResult | null>(null);
   const [sectionReactions, setSectionReactions] = useState<Record<string, 'up' | 'down'>>({});
 
   // Reset all state when changing days
@@ -75,6 +79,8 @@ export const DayDetailPage: React.FC = () => {
       setPhonemeScore(null);
       setFluencyScore(null);
       setSavedFluencyResult(null);
+      setReasoningScore(null);
+      setSavedReasoningResult(null);
       // Don't reset difficultWords - they persist across days
     }
   }, [dayNumber]);
@@ -231,6 +237,31 @@ export const DayDetailPage: React.FC = () => {
         }
       } catch {
         console.log('Writing fluency drills table may not exist yet');
+      }
+
+      // Load reasoning drill progress
+      try {
+        const { data: reasoningData } = await supabase
+          .from('reasoning_drills')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('day_number', dayNum)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (reasoningData) {
+          setReasoningScore(reasoningData.score);
+          setSavedReasoningResult({
+            mode: reasoningData.mode,
+            question: reasoningData.question,
+            response: reasoningData.response,
+            score: reasoningData.score,
+            evaluation: reasoningData.evaluation,
+          });
+        }
+      } catch {
+        console.log('Reasoning drills table may not exist yet');
       }
     } catch (err) {
       console.log('Error loading day progress:', err);
@@ -750,6 +781,52 @@ export const DayDetailPage: React.FC = () => {
     }
   };
 
+  const handleReasoningComplete = async (result: ReasoningDrillResult) => {
+    setReasoningScore(result.score);
+    setSavedReasoningResult(result);
+
+    // Auto-mark Reasoning activity as completed
+    const newCompletedActivities = completedActivities.includes('Reasoning')
+      ? completedActivities
+      : [...completedActivities, 'Reasoning'];
+    setCompletedActivities(newCompletedActivities);
+
+    // Save reasoning drill to database
+    if (user && day) {
+      try {
+        await supabase
+          .from('reasoning_drills')
+          .upsert({
+            user_id: user.id,
+            day_number: day.day,
+            mode: result.mode,
+            question: result.question,
+            response: result.response,
+            evaluation: result.evaluation,
+            score: result.score,
+            updated_at: new Date().toISOString(),
+          }, {
+            onConflict: 'user_id,day_number'
+          });
+
+        // Also update progress
+        await supabase
+          .from('learning_progress')
+          .upsert({
+            user_id: user.id,
+            day_number: day.day,
+            completed: isCompleted,
+            notes: notes,
+            completed_activities: newCompletedActivities
+          }, {
+            onConflict: 'user_id,day_number'
+          });
+      } catch (err) {
+        console.error('Error saving reasoning drill:', err);
+      }
+    }
+  };
+
   if (!day) {
     return (
       <div className="day-detail-page">
@@ -832,7 +909,7 @@ export const DayDetailPage: React.FC = () => {
             {isCompleted && <span className="completed-badge">Completed</span>}
           </div>
           <h1>{day.title}</h1>
-          {day.transcript && (
+          {day.transcript && day.transcriptFile && (
             <p className="transcript-info">
               <strong>Transcript:</strong> {day.transcript}
               {day.lineRange && ` (Lines ${day.lineRange})`}
@@ -908,6 +985,22 @@ export const DayDetailPage: React.FC = () => {
                     dayNumber={day.day}
                     onComplete={handleFluencyComplete}
                     savedResult={savedFluencyResult}
+                    isAuthenticated={isAuthenticated}
+                  />
+
+                  <ReasoningDrill
+                    fixedMode="prep"
+                    dayNumber={day.day}
+                    onComplete={handleReasoningComplete}
+                    savedResult={savedReasoningResult?.mode === 'prep' ? savedReasoningResult : null}
+                    isAuthenticated={isAuthenticated}
+                  />
+
+                  <ReasoningDrill
+                    fixedMode="quickfire"
+                    dayNumber={day.day}
+                    onComplete={handleReasoningComplete}
+                    savedResult={savedReasoningResult?.mode === 'quickfire' ? savedReasoningResult : null}
                     isAuthenticated={isAuthenticated}
                   />
                 </>
@@ -998,7 +1091,7 @@ export const DayDetailPage: React.FC = () => {
               )}
             </section>
 
-            {(writingScore !== null || speakingScore !== null || drillScore !== null || phonemeScore !== null || fluencyScore !== null) && (
+            {(writingScore !== null || speakingScore !== null || drillScore !== null || phonemeScore !== null || fluencyScore !== null || reasoningScore !== null) && (
               <section className="day-section scores-summary">
                 <h2>Today's Scores</h2>
                 <div className="scores-grid">
@@ -1058,6 +1151,12 @@ export const DayDetailPage: React.FC = () => {
                     <div className="score-summary-item">
                       <span className="score-label">Fluency</span>
                       <span className="score-value">{fluencyScore.toFixed(1)} WPM</span>
+                    </div>
+                  )}
+                  {reasoningScore !== null && (
+                    <div className="score-summary-item">
+                      <span className="score-label">Reasoning</span>
+                      <span className="score-value">{reasoningScore}/10</span>
                     </div>
                   )}
                 </div>

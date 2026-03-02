@@ -33,6 +33,7 @@ export const useSpeechRecognition = ({
   const accumulatedTranscriptRef = useRef<string>('');
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const isListeningRef = useRef(false);
+  const isRestartingRef = useRef(false);
 
   const onTranscriptRef = useRef(onTranscript);
   const onSpeechEndRef = useRef(onSpeechEnd);
@@ -89,6 +90,11 @@ export const useSpeechRecognition = ({
     };
 
     recognition.onend = () => {
+      // Skip resetting state if we're restarting after no-speech
+      if (isRestartingRef.current) {
+        isRestartingRef.current = false;
+        return;
+      }
       isListeningRef.current = false;
       setIsListening(false);
     };
@@ -125,6 +131,22 @@ export const useSpeechRecognition = ({
       // Don't surface aborted errors — they happen during intentional teardown
       if (event.error === 'aborted') return;
 
+      // Auto-restart on no-speech instead of showing an error
+      if (event.error === 'no-speech') {
+        if (isListeningRef.current) {
+          isRestartingRef.current = true;
+          try {
+            recognition.stop();
+            setTimeout(() => {
+              if (isListeningRef.current && recognitionRef.current === recognition) {
+                try { recognition.start(); } catch { /* ignore */ }
+              }
+            }, 200);
+          } catch { /* ignore */ }
+        }
+        return;
+      }
+
       let errorMessage = event.error;
       switch (event.error) {
         case 'service-not-allowed':
@@ -132,9 +154,6 @@ export const useSpeechRecognition = ({
           break;
         case 'not-allowed':
           errorMessage = 'Microphone access was denied. Please allow microphone permissions and try again.';
-          break;
-        case 'no-speech':
-          errorMessage = 'No speech detected. Please try speaking closer to the microphone.';
           break;
         case 'audio-capture':
           errorMessage = 'No microphone found. Please connect a microphone and try again.';

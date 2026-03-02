@@ -462,3 +462,47 @@ export type WritingFluencyDrillResult = {
   evaluation: WritingFluencyEvaluation;
   created_at: string;
 };
+
+// Reasoning Drill types (PREP mode)
+export type ReasoningEvaluation = {
+  overallScore: EvaluationScore;
+  reasoning: {
+    score: EvaluationScore;
+    hasClearPoint: boolean;
+    hasReason: boolean;
+    hasExample: boolean;
+    hasConclusion: boolean;
+    feedback: string;
+  };
+  language: {
+    score: EvaluationScore;
+    feedback: string;
+    corrections: Array<{ original: string; corrected: string; explanation: string }>;
+  };
+  coherence: {
+    score: EvaluationScore;
+    feedback: string;
+    transitionsUsed: string[];
+    suggestedTransitions: string[];
+  };
+  encouragement: string;
+  nextSteps: string[];
+};
+
+// Quick-fire mode evaluation
+export type QuickFireEvaluation = {
+  overallScore: EvaluationScore;
+  responses: Array<{
+    question: string;
+    answer: string;
+    reasoningScore: EvaluationScore;
+    languageScore: EvaluationScore;
+    feedback: string;
+  }>;
+  patterns: {
+    strengths: string[];
+    areasToImprove: string[];
+  };
+  encouragement: string;
+  nextSteps: string[];
+};

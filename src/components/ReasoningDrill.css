@@ -1,0 +1,820 @@
+/* Reasoning Drill Component Styles */
+.reasoning-drill {
+  background-color: var(--surface);
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.reasoning-drill .practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: var(--surface-light);
+  cursor: pointer;
+}
+
+.reasoning-drill .practice-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.reasoning-drill .practice-content {
+  padding: 1.5rem;
+}
+
+.reasoning-drill .expand-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Mode tabs */
+.reasoning-drill .mode-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 2px solid var(--border);
+}
+
+.reasoning-drill .mode-tab {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  background-color: var(--background);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reasoning-drill .mode-tab:first-child {
+  border-right: 1px solid var(--border);
+}
+
+.reasoning-drill .mode-tab.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.reasoning-drill .mode-tab:hover:not(.active) {
+  background-color: var(--surface-light);
+}
+
+/* Drill intro */
+.reasoning-drill .drill-intro {
+  text-align: center;
+}
+
+.reasoning-drill .drill-description {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* PREP framework reminder */
+.reasoning-drill .prep-framework {
+  background-color: var(--background);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.reasoning-drill .prep-framework h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.reasoning-drill .prep-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reasoning-drill .prep-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  background-color: var(--surface);
+}
+
+.reasoning-drill .prep-letter {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  min-width: 24px;
+}
+
+.reasoning-drill .prep-label {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+/* Question display */
+.reasoning-drill .question-display {
+  background-color: var(--background);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.reasoning-drill .question-display h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.reasoning-drill .question-category {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+
+.reasoning-drill .question-text {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Input mode toggle */
+.reasoning-drill .input-mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.reasoning-drill .input-mode-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--background);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reasoning-drill .input-mode-btn.active {
+  border-color: var(--primary-color);
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--primary-color);
+}
+
+/* Response textarea */
+.reasoning-drill .response-area textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.reasoning-drill .response-area textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Speaking area */
+.reasoning-drill .speaking-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.reasoning-drill .record-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  background-color: var(--background);
+  color: var(--text-secondary);
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reasoning-drill .record-btn.recording {
+  border-color: var(--error);
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+  animation: pulse-record 1.5s infinite;
+}
+
+@keyframes pulse-record {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+}
+
+.reasoning-drill .transcript-preview {
+  background-color: var(--background);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  font-style: italic;
+  line-height: 1.5;
+  max-height: 120px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+/* Submit / action buttons */
+.reasoning-drill .action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.reasoning-drill .action-buttons button {
+  min-width: 140px;
+}
+
+.reasoning-drill .start-btn,
+.reasoning-drill .submit-btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+/* Timer selector for quick-fire */
+.reasoning-drill .timer-selector {
+  margin-bottom: 1.5rem;
+}
+
+.reasoning-drill .timer-selector h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.reasoning-drill .timer-options {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.reasoning-drill .timer-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background-color: var(--background);
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reasoning-drill .timer-option:hover {
+  border-color: var(--primary-color);
+}
+
+.reasoning-drill .timer-option.selected {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.reasoning-drill .timer-label {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.reasoning-drill .timer-desc {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* Quick-fire active state */
+.reasoning-drill .quickfire-active {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reasoning-drill .quickfire-progress {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.reasoning-drill .progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--border);
+  transition: all 0.2s;
+}
+
+.reasoning-drill .progress-dot.completed {
+  background-color: var(--success);
+}
+
+.reasoning-drill .progress-dot.current {
+  background-color: var(--primary-color);
+  transform: scale(1.3);
+}
+
+/* Timer display */
+.reasoning-drill .timer-display {
+  display: flex;
+  justify-content: center;
+}
+
+.reasoning-drill .timer-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s;
+}
+
+.reasoning-drill .timer-circle.warning {
+  background: linear-gradient(135deg, var(--warning), #f59e0b);
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+}
+
+.reasoning-drill .timer-circle.danger {
+  background: linear-gradient(135deg, var(--error), #dc2626);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+}
+
+.reasoning-drill .timer-time {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.reasoning-drill .timer-sublabel {
+  font-size: 0.7rem;
+  opacity: 0.9;
+  margin-top: 0.25rem;
+}
+
+/* Evaluating state */
+.reasoning-drill .evaluating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.reasoning-drill .spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: reasoning-spin 1s linear infinite;
+}
+
+@keyframes reasoning-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error message */
+.reasoning-drill .error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Evaluation results */
+.reasoning-drill .evaluation-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.reasoning-drill .overall-score {
+  text-align: center;
+  padding: 1rem;
+}
+
+.reasoning-drill .score-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+  background-color: var(--background);
+}
+
+.reasoning-drill .score-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.reasoning-drill .score-max {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.reasoning-drill .score-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* PREP checklist */
+.reasoning-drill .prep-checklist {
+  background-color: var(--background);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.reasoning-drill .prep-checklist h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.reasoning-drill .prep-check-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reasoning-drill .prep-check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  background-color: var(--surface);
+}
+
+.reasoning-drill .check-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.reasoning-drill .check-icon.pass {
+  background-color: var(--success);
+  color: white;
+}
+
+.reasoning-drill .check-icon.miss {
+  background-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.reasoning-drill .check-label {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+/* Score breakdown */
+.reasoning-drill .score-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reasoning-drill .score-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reasoning-drill .score-category {
+  min-width: 120px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.reasoning-drill .score-bar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--background);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.reasoning-drill .score-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.reasoning-drill .score-value {
+  min-width: 50px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Feedback sections */
+.reasoning-drill .feedback-section {
+  background-color: var(--background);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.reasoning-drill .feedback-section h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.reasoning-drill .feedback-section p {
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.reasoning-drill .feedback-section ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.reasoning-drill .feedback-section li {
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.reasoning-drill .feedback-section.encouragement {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* Corrections */
+.reasoning-drill .corrections-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.reasoning-drill .correction-item {
+  background-color: var(--surface);
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  border-left: 3px solid var(--primary-color);
+}
+
+.reasoning-drill .correction-original {
+  color: var(--error);
+  text-decoration: line-through;
+  font-size: 0.9rem;
+}
+
+.reasoning-drill .correction-corrected {
+  color: var(--success);
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.reasoning-drill .correction-explanation {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* Transitions */
+.reasoning-drill .transitions-used,
+.reasoning-drill .transitions-suggested {
+  margin-top: 0.75rem;
+}
+
+.reasoning-drill .transitions-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.reasoning-drill .transition-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.reasoning-drill .transition-tag {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+}
+
+.reasoning-drill .transition-tag.used {
+  background-color: var(--success);
+  color: white;
+}
+
+.reasoning-drill .transition-tag.suggested {
+  background-color: var(--surface);
+  color: var(--text-secondary);
+  border: 1px dashed var(--border);
+}
+
+/* Quick-fire response cards */
+.reasoning-drill .qf-responses {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reasoning-drill .qf-response-card {
+  background-color: var(--background);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--primary-color);
+}
+
+.reasoning-drill .qf-question {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.reasoning-drill .qf-answer {
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.reasoning-drill .qf-scores {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.reasoning-drill .qf-score {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.reasoning-drill .qf-score strong {
+  color: var(--text-primary);
+}
+
+.reasoning-drill .qf-feedback {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Patterns section */
+.reasoning-drill .patterns-section {
+  background-color: var(--background);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.reasoning-drill .patterns-section h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.reasoning-drill .pattern-group {
+  margin-bottom: 0.75rem;
+}
+
+.reasoning-drill .pattern-group:last-child {
+  margin-bottom: 0;
+}
+
+.reasoning-drill .pattern-label {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.reasoning-drill .pattern-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.reasoning-drill .pattern-item {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+}
+
+.reasoning-drill .pattern-item.strength {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: var(--success);
+}
+
+.reasoning-drill .pattern-item.improve {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: var(--warning);
+}
+
+/* Action buttons */
+.reasoning-drill .try-again-btn {
+  width: 100%;
+}
+
+.reasoning-drill .next-question-btn {
+  margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reasoning-drill .mode-tabs {
+    flex-direction: column;
+  }
+
+  .reasoning-drill .mode-tab:first-child {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .reasoning-drill .timer-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reasoning-drill .timer-option {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  .reasoning-drill .action-buttons {
+    flex-direction: column;
+  }
+
+  .reasoning-drill .action-buttons button {
+    width: 100%;
+  }
+
+  .reasoning-drill .score-item {
+    flex-wrap: wrap;
+  }
+
+  .reasoning-drill .score-category {
+    min-width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .reasoning-drill .qf-scores {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

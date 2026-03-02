@@ -12,7 +12,9 @@ const {
   PRONUNCIATION_EVALUATION_PROMPT,
   RESUME_EVALUATION_PROMPT,
   LINKEDIN_EVALUATION_PROMPT,
-  WRITING_FLUENCY_EVALUATION_PROMPT
+  WRITING_FLUENCY_EVALUATION_PROMPT,
+  REASONING_EVALUATION_PROMPT,
+  QUICK_FIRE_EVALUATION_PROMPT,
 } = require('./prompt');
 
 const app = express();
@@ -244,7 +246,7 @@ app.post('/api/evaluate-writing', async (req, res) => {
 
     const response = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1500,
+      max_tokens: 2500,
       system: WRITING_EVALUATION_PROMPT,
       messages: [{
         role: 'user',
@@ -793,7 +795,7 @@ app.post('/api/evaluate-writing-fluency', async (req, res) => {
 
     const response = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1500,
+      max_tokens: 2000,
       system: WRITING_FLUENCY_EVALUATION_PROMPT,
       messages: [{
         role: 'user',
@@ -862,6 +864,164 @@ Return ONLY valid JSON, no other text.`
   } catch (error) {
     console.error('Writing fluency evaluation error:', error.message || error);
     res.status(500).json({ error: 'Failed to evaluate writing fluency', details: error.message });
+  }
+});
+
+// Reasoning evaluation endpoint (PREP mode)
+app.post('/api/evaluate-reasoning', async (req, res) => {
+  console.log('\n=== Reasoning Evaluation Request ===');
+
+  try {
+    const { question, response: userResponse, mode } = req.body;
+
+    if (!question || !userResponse) {
+      return res.status(400).json({ error: 'Missing required fields: question and response' });
+    }
+
+    console.log('Question:', question);
+    console.log('Response length:', userResponse.length);
+    console.log('Mode:', mode || 'writing');
+
+    const apiResponse = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2000,
+      system: REASONING_EVALUATION_PROMPT,
+      messages: [{
+        role: 'user',
+        content: `Evaluate this student's response using the PREP framework.
+
+**Question Asked:**
+"${question}"
+
+**Input Mode:** ${mode || 'writing'} ${mode === 'speaking' ? '(transcribed from speech - minor transcription errors may exist)' : ''}
+
+**Student's Response:**
+"${userResponse}"
+
+Provide your evaluation as JSON with this EXACT structure:
+{
+  "overallScore": { "score": <1-10>, "label": "<Excellent/Good/Fair/Needs Improvement>" },
+  "reasoning": {
+    "score": { "score": <1-10>, "label": "<label>" },
+    "hasClearPoint": <true/false - did they state a clear position?>,
+    "hasReason": <true/false - did they provide a reason?>,
+    "hasExample": <true/false - did they give an example?>,
+    "hasConclusion": <true/false - did they restate or reinforce the point?>,
+    "feedback": "<2-3 sentences about PREP structure quality>"
+  },
+  "language": {
+    "score": { "score": <1-10>, "label": "<label>" },
+    "feedback": "<2-3 sentences about language quality>",
+    "corrections": [
+      { "original": "<exact phrase>", "corrected": "<better version>", "explanation": "<why>" }
+    ]
+  },
+  "coherence": {
+    "score": { "score": <1-10>, "label": "<label>" },
+    "feedback": "<2-3 sentences about logical flow>",
+    "transitionsUsed": ["<transition words they used>"],
+    "suggestedTransitions": ["<3-4 specific transitions that fix THIS response's weak spots, e.g. 'For instance... — use after your first reason to introduce your example'>"]
+  },
+  "encouragement": "<1-2 encouraging sentences>",
+  "nextSteps": ["<suggestion 1 - be specific about which PREP stage to improve and how>", "<suggestion 2>"]
+}
+
+Return ONLY valid JSON, no other text.`
+      }]
+    });
+
+    const rawText = apiResponse.content[0].text;
+    console.log('Claude response received, length:', rawText?.length);
+
+    let evaluation;
+    try {
+      evaluation = parseJSONResponse(rawText);
+    } catch (parseError) {
+      console.error('Reasoning evaluation JSON parse error:', parseError.message);
+      console.error('Raw Claude response:', rawText?.substring(0, 500));
+      return res.status(500).json({ error: 'Failed to parse AI evaluation. Please try again.' });
+    }
+
+    console.log('Reasoning evaluation parsed successfully');
+    res.json({ evaluation });
+
+  } catch (error) {
+    console.error('Reasoning evaluation error:', error.message || error);
+    res.status(500).json({ error: 'Failed to evaluate reasoning', details: error.message });
+  }
+});
+
+// Quick-fire evaluation endpoint (batch)
+app.post('/api/evaluate-quick-fire', async (req, res) => {
+  console.log('\n=== Quick-fire Evaluation Request ===');
+
+  try {
+    const { responses } = req.body;
+
+    if (!responses || !Array.isArray(responses) || responses.length === 0) {
+      return res.status(400).json({ error: 'Missing required field: responses (array of {question, answer})' });
+    }
+
+    console.log('Evaluating', responses.length, 'quick-fire responses');
+
+    const responsesText = responses.map((r, i) =>
+      `Q${i + 1}: "${r.question}"\nA${i + 1}: "${r.answer}"`
+    ).join('\n\n');
+
+    const apiResponse = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2000,
+      system: QUICK_FIRE_EVALUATION_PROMPT,
+      messages: [{
+        role: 'user',
+        content: `Evaluate this batch of quick-fire spoken responses (transcribed from speech under time pressure).
+
+**Responses:**
+${responsesText}
+
+Provide your evaluation as JSON with this EXACT structure:
+{
+  "overallScore": { "score": <1-10>, "label": "<Excellent/Good/Fair/Needs Improvement>" },
+  "responses": [
+    {
+      "question": "<the question>",
+      "answer": "<their answer>",
+      "reasoningScore": { "score": <1-10>, "label": "<label>" },
+      "languageScore": { "score": <1-10>, "label": "<label>" },
+      "feedback": "<1-2 sentences of specific feedback>"
+    }
+  ],
+  "patterns": {
+    "strengths": ["<strength 1>", "<strength 2>"],
+    "areasToImprove": ["<area 1>", "<area 2>"]
+  },
+  "encouragement": "<2-3 encouraging sentences about their performance under pressure>",
+  "nextSteps": ["<tip 1>", "<tip 2>"]
+}
+
+Include one entry in "responses" for each Q&A pair, in order.
+Return ONLY valid JSON, no other text.`
+      }]
+    });
+
+    const rawText = apiResponse.content[0].text;
+    console.log('Claude response received, length:', rawText?.length);
+
+    let evaluation;
+    try {
+      evaluation = parseJSONResponse(rawText);
+    } catch (parseError) {
+      console.error('Quick-fire evaluation JSON parse error:', parseError.message);
+      console.error('Raw Claude response:', rawText?.substring(0, 500));
+      return res.status(500).json({ error: 'Failed to parse AI evaluation. Please try again.' });
+    }
+
+    console.log('Quick-fire evaluation parsed successfully');
+    res.json({ evaluation });
+
+  } catch (error) {
+    console.error('Quick-fire evaluation error:', error.message || error);
+    res.status(500).json({ error: 'Failed to evaluate quick-fire responses', details: error.message });
   }
 });
 

@@ -1,4 +1,4 @@
-import type { Message, ConversationFeedback, WritingEvaluation, SpeakingEvaluation, PronunciationEvaluation, ResumeEvaluation, LinkedInEvaluation, WritingFluencyEvaluation } from '../types';
+import type { Message, ConversationFeedback, WritingEvaluation, SpeakingEvaluation, PronunciationEvaluation, ResumeEvaluation, LinkedInEvaluation, WritingFluencyEvaluation, ReasoningEvaluation, QuickFireEvaluation } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -128,6 +128,24 @@ export interface WritingFluencyEvaluationRequest {
 
 export interface WritingFluencyEvaluationResponse {
   evaluation: WritingFluencyEvaluation;
+}
+
+export interface ReasoningEvaluationRequest {
+  question: string;
+  response: string;
+  mode: 'writing' | 'speaking';
+}
+
+export interface ReasoningEvaluationResponse {
+  evaluation: ReasoningEvaluation;
+}
+
+export interface QuickFireEvaluationRequest {
+  responses: Array<{ question: string; answer: string }>;
+}
+
+export interface QuickFireEvaluationResponse {
+  evaluation: QuickFireEvaluation;
 }
 
 export const api = {
@@ -279,6 +297,40 @@ export const api = {
 
     if (!response.ok) {
       throw new Error('Failed to evaluate writing fluency');
+    }
+
+    return response.json();
+  },
+
+  // Evaluate reasoning (PREP mode)
+  async evaluateReasoning(request: ReasoningEvaluationRequest): Promise<ReasoningEvaluationResponse> {
+    const response = await fetchWithRetry(`${API_URL}/api/evaluate-reasoning`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to evaluate reasoning');
+    }
+
+    return response.json();
+  },
+
+  // Evaluate quick-fire responses (batch)
+  async evaluateQuickFire(request: QuickFireEvaluationRequest): Promise<QuickFireEvaluationResponse> {
+    const response = await fetchWithRetry(`${API_URL}/api/evaluate-quick-fire`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to evaluate quick-fire responses');
     }
 
     return response.json();
