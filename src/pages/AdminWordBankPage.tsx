@@ -19,6 +19,7 @@ export const AdminWordBankPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [words, setWords] = useState<WordItem[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [newWord, setNewWord] = useState('');
   const [adding, setAdding] = useState(false);
@@ -39,13 +40,22 @@ export const AdminWordBankPage: React.FC = () => {
 
   const loadWords = async () => {
     try {
-      const { data, error } = await supabase
-        .from('admin_word_bank')
-        .select('id, word, input_count, last_input_at, created_at')
-        .order('created_at', { ascending: false });
+      const [countResult, dataResult] = await Promise.all([
+        supabase
+          .from('admin_word_bank')
+          .select('*', { count: 'exact', head: true }),
+        supabase
+          .from('admin_word_bank')
+          .select('id, word, input_count, last_input_at, created_at')
+          .order('created_at', { ascending: false })
+          .range(0, 4999),
+      ]);
 
-      if (error) throw error;
-      setWords(data || []);
+      if (countResult.error) throw countResult.error;
+      if (dataResult.error) throw dataResult.error;
+
+      setTotalCount(countResult.count ?? 0);
+      setWords(dataResult.data || []);
     } catch (err) {
       console.error('Error loading words:', err);
     } finally {
@@ -110,6 +120,7 @@ export const AdminWordBankPage: React.FC = () => {
 
       if (error) throw error;
       setWords(words.filter((w) => w.id !== id));
+      setTotalCount((c) => c - 1);
     } catch (err) {
       console.error('Error deleting word:', err);
     }
@@ -149,7 +160,7 @@ export const AdminWordBankPage: React.FC = () => {
             &larr; Back to Dashboard
           </button>
           <h1>Admin: Word Bank</h1>
-          <p style={{ fontSize: '1.5rem', fontWeight: 600 }}>{words.length} words total</p>
+          <p style={{ fontSize: '1.5rem', fontWeight: 600 }}>{totalCount} words total</p>
         </div>
       </div>
 
