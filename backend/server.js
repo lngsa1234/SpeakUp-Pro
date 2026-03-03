@@ -25,6 +25,24 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// Retry wrapper for Anthropic API calls (handles 529 overloaded errors)
+async function callAnthropicWithRetry(params, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await anthropic.messages.create(params);
+    } catch (err) {
+      const isOverloaded = err?.status === 529 || err?.message?.includes('529') || err?.message?.includes('overloaded');
+      if (isOverloaded && attempt < retries) {
+        const delay = (attempt + 1) * 2000;
+        console.log(`Anthropic overloaded (attempt ${attempt + 1}/${retries + 1}), retrying in ${delay / 1000}s...`);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -58,7 +76,7 @@ app.post('/api/chat', async (req, res) => {
     }
 
     // Call Anthropic API
-    const response = await anthropic.messages.create({
+    const response = await callAnthropicWithRetry({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 2000,
       system: ENGLISH_COACH_PROMPT,
@@ -102,7 +120,7 @@ app.post('/api/feedback', async (req, res) => {
 
     console.log('Calling Anthropic API for feedback generation...');
     // Call Anthropic API for feedback
-    const response = await anthropic.messages.create({
+    const response = await callAnthropicWithRetry({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 3000,
       system: FEEDBACK_PROMPT,
@@ -244,7 +262,7 @@ app.post('/api/evaluate-writing', async (req, res) => {
     console.log('Text length:', text.length);
     console.log('Vocabulary to check:', vocabularyToUse?.join(', '));
 
-    const response = await anthropic.messages.create({
+    const response = await callAnthropicWithRetry({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 2500,
       system: WRITING_EVALUATION_PROMPT,
@@ -336,7 +354,7 @@ app.post('/api/evaluate-speaking', async (req, res) => {
     // Sanitize transcription to prevent prompt injection / broken strings
     const safeTranscription = transcription.replace(/"/g, '\\"');
 
-    const response = await anthropic.messages.create({
+    const response = await callAnthropicWithRetry({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 3000,
       system: SPEAKING_EVALUATION_PROMPT,
@@ -428,7 +446,7 @@ app.post('/api/evaluate-pronunciation-batch', async (req, res) => {
       `${i + 1}. Word: "${a.word}" | Student said: "${a.transcription}"`
     ).join('\n');
 
-    const response = await anthropic.messages.create({
+    const response = await callAnthropicWithRetry({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 2000,
       system: PRONUNCIATION_EVALUATION_PROMPT,
@@ -492,7 +510,7 @@ app.post('/api/evaluate-resume', async (req, res) => {
     console.log('Target role:', targetRole || 'Product Manager');
     console.log('Target company:', targetCompany || 'Not specified');
 
-    const response = await anthropic.messages.create({
+    const response = await callAnthropicWithRetry({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 4000,
       system: RESUME_EVALUATION_PROMPT,
@@ -638,7 +656,7 @@ app.post('/api/evaluate-linkedin', async (req, res) => {
     console.log('Target role:', targetRole || 'Product Manager');
     console.log('Target industry:', targetIndustry || 'Not specified');
 
-    const response = await anthropic.messages.create({
+    const response = await callAnthropicWithRetry({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 4000,
       system: LINKEDIN_EVALUATION_PROMPT,
@@ -793,7 +811,7 @@ app.post('/api/evaluate-writing-fluency', async (req, res) => {
     console.log('Word count:', wordCount);
     console.log('WPM:', wpm);
 
-    const response = await anthropic.messages.create({
+    const response = await callAnthropicWithRetry({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 2000,
       system: WRITING_FLUENCY_EVALUATION_PROMPT,
@@ -882,7 +900,7 @@ app.post('/api/evaluate-reasoning', async (req, res) => {
     console.log('Response length:', userResponse.length);
     console.log('Mode:', mode || 'writing');
 
-    const apiResponse = await anthropic.messages.create({
+    const apiResponse = await callAnthropicWithRetry({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 2000,
       system: REASONING_EVALUATION_PROMPT,
@@ -968,9 +986,9 @@ app.post('/api/evaluate-quick-fire', async (req, res) => {
       `Q${i + 1}: "${r.question}"\nA${i + 1}: "${r.answer}"`
     ).join('\n\n');
 
-    const apiResponse = await anthropic.messages.create({
+    const apiResponse = await callAnthropicWithRetry({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 2000,
+      max_tokens: 3500,
       system: QUICK_FIRE_EVALUATION_PROMPT,
       messages: [{
         role: 'user',
