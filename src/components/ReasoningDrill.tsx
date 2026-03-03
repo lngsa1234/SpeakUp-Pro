@@ -47,6 +47,7 @@ export const ReasoningDrill: React.FC<ReasoningDrillProps> = ({
   const [result, setResult] = useState<ReasoningDrillResult | null>(savedResult || null);
   const [error, setError] = useState<string | null>(null);
   const [questionIndex, setQuestionIndex] = useState(0);
+  const [showConnectors, setShowConnectors] = useState(false);
   const hasManuallyResetRef = useRef(false);
 
   // Quick-fire state
@@ -387,6 +388,71 @@ export const ReasoningDrill: React.FC<ReasoningDrillProps> = ({
                 </div>
               </div>
 
+              <div className="connector-phrases">
+                <button
+                  className="connector-toggle"
+                  onClick={() => setShowConnectors(!showConnectors)}
+                >
+                  Connector Phrases {showConnectors ? '\u25B2' : '\u25BC'}
+                </button>
+                {showConnectors && (
+                  <div className="connector-grid">
+                    <div className="connector-group">
+                      <span className="connector-stage">P</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">I believe that...</span>
+                        <span className="connector-chip">In my view...</span>
+                        <span className="connector-chip">My position is...</span>
+                        <span className="connector-chip">I would argue that...</span>
+                      </div>
+                    </div>
+                    <div className="connector-group">
+                      <span className="connector-stage">P &rarr; R</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">The main reason is...</span>
+                        <span className="connector-chip">This is because...</span>
+                        <span className="connector-chip">What drives this is...</span>
+                        <span className="connector-chip">The way I see it...</span>
+                      </div>
+                    </div>
+                    <div className="connector-group">
+                      <span className="connector-stage">R &rarr; E</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">For instance...</span>
+                        <span className="connector-chip">A concrete example would be...</span>
+                        <span className="connector-chip">I experienced this when...</span>
+                        <span className="connector-chip">To illustrate...</span>
+                      </div>
+                    </div>
+                    <div className="connector-group">
+                      <span className="connector-stage">E &rarr; P</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">This shows that...</span>
+                        <span className="connector-chip">So that's why...</span>
+                        <span className="connector-chip">All things considered...</span>
+                        <span className="connector-chip">This reinforces my belief that...</span>
+                      </div>
+                    </div>
+                    <div className="connector-group">
+                      <span className="connector-stage">Depth</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">What I mean by that is...</span>
+                        <span className="connector-chip">To put it another way...</span>
+                        <span className="connector-chip">Specifically...</span>
+                      </div>
+                    </div>
+                    <div className="connector-group">
+                      <span className="connector-stage">Contrast</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">On the other hand...</span>
+                        <span className="connector-chip">That said...</span>
+                        <span className="connector-chip">While some might argue...</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div className="question-display">
                 <h4>Your Question</h4>
                 <span className="question-category">{currentQuestion.category}</span>
@@ -471,6 +537,51 @@ export const ReasoningDrill: React.FC<ReasoningDrillProps> = ({
                     </button>
                   ))}
                 </div>
+              </div>
+
+              <div className="connector-phrases">
+                <button
+                  className="connector-toggle"
+                  onClick={() => setShowConnectors(!showConnectors)}
+                >
+                  Quick Connectors {showConnectors ? '\u25B2' : '\u25BC'}
+                </button>
+                {showConnectors && (
+                  <div className="connector-grid compact">
+                    <div className="connector-group">
+                      <span className="connector-stage">Position</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">I think...</span>
+                        <span className="connector-chip">I'd say...</span>
+                        <span className="connector-chip">My take is...</span>
+                      </div>
+                    </div>
+                    <div className="connector-group">
+                      <span className="connector-stage">Reason</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">because...</span>
+                        <span className="connector-chip">the reason is...</span>
+                        <span className="connector-chip">since...</span>
+                      </div>
+                    </div>
+                    <div className="connector-group">
+                      <span className="connector-stage">Example</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">for example...</span>
+                        <span className="connector-chip">like when...</span>
+                        <span className="connector-chip">say...</span>
+                      </div>
+                    </div>
+                    <div className="connector-group">
+                      <span className="connector-stage">Wrap up</span>
+                      <div className="connector-list">
+                        <span className="connector-chip">so...</span>
+                        <span className="connector-chip">that's why...</span>
+                        <span className="connector-chip">overall...</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {!speechSupported && (
