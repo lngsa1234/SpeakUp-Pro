@@ -9,15 +9,15 @@
   --primary-color: #6366f1;
   --primary-hover: #4f46e5;
   --secondary-color: #64748b;
-  --background: #0f172a;
-  --surface: #1e293b;
-  --surface-light: #334155;
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
+  --background: #ffffff;
+  --surface: #f1f5f9;
+  --surface-light: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
-  --border: #334155;
+  --border: #cbd5e1;
 }
 
 body {
@@ -136,7 +136,7 @@ body {
   border-radius: 1rem;
   max-width: 450px;
   width: 100%;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 .auth-header {
@@ -498,7 +498,7 @@ body {
   width: 480px;
   max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   border: 1px solid var(--border-color);
 }
@@ -2984,8 +2984,8 @@ body {
 }
 
 .segment-text .highlight-word {
-  background-color: rgba(99, 102, 241, 0.3);
-  color: #a5b4fc;
+  background-color: rgba(99, 102, 241, 0.2);
+  color: #4f46e5;
   padding: 0.1em 0.2em;
   border-radius: 0.2em;
 }
