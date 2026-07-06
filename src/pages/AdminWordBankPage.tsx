@@ -20,6 +20,8 @@ export const AdminWordBankPage: React.FC = () => {
   const navigate = useNavigate();
   const [words, setWords] = useState<WordItem[]>([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [weekCount, setWeekCount] = useState(0);
+  const [monthCount, setMonthCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [newWord, setNewWord] = useState('');
   const [adding, setAdding] = useState(false);
@@ -40,10 +42,24 @@ export const AdminWordBankPage: React.FC = () => {
 
   const loadWords = async () => {
     try {
-      const [countResult, dataResult] = await Promise.all([
+      const now = new Date();
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - now.getDay()); // Sunday of current week
+      weekStart.setHours(0, 0, 0, 0);
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+      const [countResult, weekResult, monthResult, dataResult] = await Promise.all([
         supabase
           .from('admin_word_bank')
           .select('*', { count: 'exact', head: true }),
+        supabase
+          .from('admin_word_bank')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', weekStart.toISOString()),
+        supabase
+          .from('admin_word_bank')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', monthStart.toISOString()),
         supabase
           .from('admin_word_bank')
           .select('id, word, input_count, last_input_at, created_at')
@@ -52,9 +68,13 @@ export const AdminWordBankPage: React.FC = () => {
       ]);
 
       if (countResult.error) throw countResult.error;
+      if (weekResult.error) throw weekResult.error;
+      if (monthResult.error) throw monthResult.error;
       if (dataResult.error) throw dataResult.error;
 
       setTotalCount(countResult.count ?? 0);
+      setWeekCount(weekResult.count ?? 0);
+      setMonthCount(monthResult.count ?? 0);
       setWords(dataResult.data || []);
     } catch (err) {
       console.error('Error loading words:', err);
@@ -161,6 +181,32 @@ export const AdminWordBankPage: React.FC = () => {
           </button>
           <h1>Admin: Word Bank</h1>
           <p style={{ fontSize: '1.5rem', fontWeight: 600 }}>{totalCount} words total</p>
+          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+            <span
+              style={{
+                background: '#dcfce7',
+                color: '#166534',
+                padding: '0.25rem 0.75rem',
+                borderRadius: '999px',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+              }}
+            >
+              +{weekCount} this week
+            </span>
+            <span
+              style={{
+                background: '#dbeafe',
+                color: '#1e40af',
+                padding: '0.25rem 0.75rem',
+                borderRadius: '999px',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+              }}
+            >
+              +{monthCount} this month
+            </span>
+          </div>
         </div>
       </div>
 
